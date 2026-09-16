@@ -34,7 +34,7 @@ Next Image generates responsive delivery sizes from this derivative. The frame
 reserves its 4:5 crop before loading; the full derivative retains the 2:3 original.
 Eager loading supports direct #identity visits and avoids the observed Next LCP
 warning on hash navigation. It is not preloaded or assigned high fetch priority.
-The original picture/ and CV/ directories stay ignored and private. All seven
+The original portrait and CV source directories stay ignored and private. All seven
 original SHA-256 hashes matched their pre-phase values after implementation.
 
 ## Content
@@ -73,6 +73,6 @@ not an installed application dependency. Test captures live in ignored
 chrome only while taking the image, so it does not bisect the full-section image.
 The transition capture retains the real persistent shell.
 
-Local production review: http://127.0.0.1:3003/#identity and /vi#identity.
-Phase 9 is visually approved with the name-spacing and biography corrections.
+The EN and VI Identity views were reviewed locally before approval. Phase 9 is
+visually approved with the name-spacing and biography corrections.
 Those corrections passed the same visual and regression checks before checkpointing.

@@ -1,14 +1,14 @@
 # Phase 12 experience evidence audit
 
-Scope: approved portfolio content, the original master brief, and the four PDFs
-already present in `D:\Portfolio\CV`. No unrelated directories or external
-profiles were searched. PDF originals were read and left unchanged. Page 1 of
-`CV IT Resume.pdf` was rendered into ignored test-results for visual verification.
+Scope: approved portfolio content, the original master brief, and the private CV
+sources available during the audit. No unrelated directories or external
+profiles were searched. PDF originals were read and left unchanged. The selected
+IT CV was rendered into ignored test results for visual verification.
 File timestamps were not used as employment dates.
 
 ## UAT Tester - Web & Mobile Applications
 
-CONFIRMED by `CV IT Resume.pdf`:
+CONFIRMED by the reviewed private IT CV:
 
 - Role: UAT Tester - Web & Mobile Applications.
 - Dates: August 2026 - Present (month precision).

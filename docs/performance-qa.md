@@ -106,10 +106,10 @@ Export total: **3,503,629 bytes**. All 12 published routes remain exported; the 
 | CSS | 1 | 72,981 | 13,869 |
 | Fonts | 22 | 166,980 | already compressed |
 | Portrait | 1 | 103,178 | already compressed |
-| PDF | 1 | 4,702 | on demand only |
+| PDF | 1 | 4,604 | on demand only |
 | RSC/static text and robots | 53 | 931,407 | 230,138 |
 
-The whole-export total is not homepage transfer. The PDF is not fetched on normal page load. Public CV SHA-256 remains `86A384A790F4A696D8F4EB9B22CDEB31569D52B9ABC1533FA2CA735F0B4BEC33`. Sitemap, robots, original assets, routes and metadata were not edited.
+The whole-export total is not homepage transfer. The PDF is not fetched on normal page load. Phase 24 subsequently added binary Git handling and restored the working/export copy to the valid repository and deployment SHA-256 `F1FA8676C5FC2F0E6D676529FE97100EAAA133021B589E80C7E940BDDE1F77C9`. Sitemap, robots, original assets, routes and metadata were not edited during this performance phase.
 
 ## Optimization decisions
 

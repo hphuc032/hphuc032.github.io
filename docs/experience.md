@@ -77,8 +77,8 @@ Existing Hero, Identity, Expertise, Operations, global UI and route checks are
 rerun in production after the final build. Implementation diffs are checked against
 checkpoint 3afa4f1 so earlier section and case-study files stay unchanged.
 
-Review: http://localhost:3007/#experience and
-http://localhost:3007/vi#experience. Phase 12 remains uncommitted for approval.
+The EN and VI Experience views were reviewed locally before the Phase 12
+checkpoint.
 
 ## Phase 13 entry point
 

@@ -1,6 +1,6 @@
 # Phase 11 evidence audit — pre-implementation
 
-Scope: D:\Portfolio source, docs, README, asset inventory, original project brief,
+Scope: portfolio source, docs, README, asset inventory, original project brief,
 and the user's explicit Phase 10 capability confirmation. No unrelated private
 directories or external GitHub repositories were searched. No GitHub API used.
 

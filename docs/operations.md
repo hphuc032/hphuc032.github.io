@@ -143,8 +143,8 @@ No Three.js or GSAP script was requested on either measured case route. Operatio
 and case CSS is approximately 6.5 KB source, about 1.7 KB gzip; no standalone client
 island or preview-media request is introduced. These are local build measurements.
 
-Review: http://localhost:3006/#operations and http://localhost:3006/vi#operations.
-The three case paths above are available under the same local origin.
+The EN and VI Operations views and all three case paths were reviewed locally
+before approval.
 
 ## Content withheld / risks / recommended Phase 12 entry point
 

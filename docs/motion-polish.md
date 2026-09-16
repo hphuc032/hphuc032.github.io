@@ -83,7 +83,7 @@ text starts at 0.9, so even the brief enhancement remains readable.
 
 ## Validation and review
 
-Review production at `http://127.0.0.1:3016/` and `/vi`. Local test outputs are
+The EN and VI production builds were reviewed locally. Local test outputs are
 ignored by Git. Screenshots retain the approved compositions; motion is best
 reviewed in the browser. Video capture is unavailable in the installed Playwright
 runtime because its FFmpeg binary is absent; no download/dependency was added.
@@ -98,9 +98,9 @@ The quieter middle sections and all article/case-study prose intentionally stay 
 - `npm run lint` — pass, zero warnings.
 - `npm run type-check` — pass, generated route types and strict TypeScript.
 - `npm run build` — pass, 15 static outputs, no build errors.
-- `npm run check:routes -- http://127.0.0.1:3016 --production` — pass; published
+- route validation against the local production build — pass; published
   EN/VI routes, redirects, 404s, CV, sitemap and production preview exclusion.
-- `npm run check:localization -- http://127.0.0.1:3016` — pass; all section hashes,
+- localization validation against the local production build — pass; all section hashes,
   bilingual content/routes/metadata, Terminal, and no-JavaScript reading.
 - Existing browser suites: `check-global-ui`, `check-hero`, `check-hero-fallbacks`,
   `check-identity`, `check-expertise`, `check-operations`, `check-experience`,
@@ -112,7 +112,7 @@ The quieter middle sections and all article/case-study prose intentionally stay 
   case/back/locale cycles leave listener counts unchanged (one pointer listener,
   four document visibility listeners in production).
 - Development Strict Mode: `check-motion --lifecycle-only` and `check-global-ui`
-  pass against the existing server at `http://127.0.0.1:3011`. Listener counts
+  passed against the local development server. Listener counts
   remain stable there as well (one pointer listener, five visibility listeners,
   including development runtime behavior). No orphan handlers or hydration errors.
 - The cursor test now starts its pointer inspection after independent navigation,
@@ -120,9 +120,8 @@ The quieter middle sections and all article/case-study prose intentionally stay 
   Synthetic document visibility tests use a separate context from history tests.
   One transient headless `ERR_NETWORK_IO_SUSPENDED` interrupted localization QA;
   a clean isolated rerun passed, without changing application routing.
-- Source CV SHA-256 remains
-  `D800848A65AB8EE3B534CEA254F3E1D2604B9E3D786DB0CBC7720BE69B8CF640`.
-  The approved public derivative also remains byte-for-byte unchanged.
+- Private source CV integrity was reverified. The approved public derivative
+  also remained byte-for-byte unchanged.
 
 ### Performance comparison
 

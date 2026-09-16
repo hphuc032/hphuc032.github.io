@@ -95,7 +95,7 @@ VI retains the English brand statements and proper/technical names while localiz
 
 The live CV URL returns HTTP 200 with `application/pdf`. It is one readable page, retains the approved professional contact information, and includes Core Team, Top 4, qualifying-round participation and CEH In Progress. Extracted text and PDF metadata match the local approved file. No removed phone number, old encouragement-prize claim or unapproved AWS responsibilities reappeared. PDF accessibility/tagging was not formally audited.
 
-**The production PDF is valid; the current Windows working copy is not byte-identical.** This was investigated read-only:
+**At the time of this review, the production PDF was valid while the Windows working copy was not byte-identical.** This was investigated read-only:
 
 | Artifact | Bytes | SHA-256 | Strict PDF parse |
 | --- | ---: | --- | --- |
@@ -108,11 +108,13 @@ The local static export faithfully copies that working PDF, so its route/header 
 
 Recommended follow-up: mark PDF assets binary in Git attributes and restore this public PDF byte-for-byte from the already-valid repository blob, then validate both Windows and Linux-style checkout/export paths. That changes asset handling and the previously recorded local checksum; it is explicitly left for authorization outside this visual-only phase. No PDF, Git attributes, Git configuration or history was changed here. Original private CV/portrait files were not touched.
 
+Phase 24 completed that follow-up: `*.pdf binary` now prevents line-ending normalization, and the working tree, repository blob, static export, and deployment use the valid 4,604-byte PDF with SHA-256 `F1FA8676C5FC2F0E6D676529FE97100EAAA133021B589E80C7E940BDDE1F77C9`. The historical values above are retained to explain the original diagnosis.
+
 ## Findings and decisions
 
 | Priority | Finding | Action |
 | --- | --- | --- |
-| MUST FIX before a future local-artifact deployment | Git text conversion damages the local PDF byte offsets despite identical content. Current production remains valid. | Documented; no asset/config mutation during this visual pass. |
+| RESOLVED in Phase 24 | Git text conversion damaged local PDF byte offsets despite identical content. | PDF assets are now binary in Git; local, export, repository, and deployed copies were verified. |
 | MUST FIX — visual | No confirmed visual defect requiring correction. | None. |
 | SHOULD FIX — in-scope | No sufficiently clear benefit to justify changing locked visuals. | None. |
 | OPTIONAL — do not implement | Study modestly shorter Achievements/middle-page spacing with actual recruiter tasks. | Not implemented; current mobile wrapping and status clarity take priority. |
@@ -136,7 +138,7 @@ Changes applied: review documentation and ignored QA captures only. Rejected cha
 | `node scripts/check-creative-interaction.mjs http://127.0.0.1:4230` | Pass: preview/focus parity, input deferral, locale/route cleanup, resize, hidden-tab behavior, touch and reduced motion. |
 | `node scripts/check-water-wake.mjs https://hphuc032.github.io` | Pass on production at 1440/1920: S-curves, circles, zigzag, reversal, bounded storage and lifecycle. Network-enabled run was needed after sandbox network denial. |
 | `npm run build:github-pages` | Pass: 16 generated pages, containing 12 published routes plus framework/metadata output. |
-| `npm run check:static-export` | Pass: 12 direct static routes, custom 404, origin-root assets, sitemap/robots and CV bytes copied unchanged. PDF structural limitation is separately disclosed above. |
+| `npm run check:static-export` | Pass: 12 direct static routes, custom 404, origin-root assets, sitemap/robots and CV bytes copied unchanged. The historical PDF limitation was resolved in Phase 24 as documented above. |
 | `npm run check:localization -- http://127.0.0.1:4231 --static-export` | Completed with an empty error list in the saved validation artifact. |
 | `npm run check:metadata -- http://127.0.0.1:4232 https://hphuc032.github.io` | Pass: canonical, alternates, Open Graph, robots and exact 12-route sitemap. |
 | `node scripts/measure-hero.mjs http://127.0.0.1:4231` | Performance smoke: dynamic desktop WebGL, static reduced-motion alternative, idle wake buffers. |

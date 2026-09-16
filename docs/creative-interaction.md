@@ -187,10 +187,10 @@ Passed on the final production build:
 - `npm run lint`
 - `npm run type-check`
 - `npm run build`
-- `npm run check:routes -- http://127.0.0.1:3018`
-- `npm run check:localization -- http://127.0.0.1:3018`
-- `node scripts/check-creative-interaction.mjs http://127.0.0.1:3018`
-- `node scripts/check-motion.mjs http://127.0.0.1:3018 --lifecycle-only`
+- route validation against the local production build
+- localization validation against the local production build
+- creative-interaction validation against the local production build
+- motion lifecycle validation against the local production build
 
 The full existing browser suites for Global UI, Hero/fallbacks, Identity,
 Expertise, Operations, Experience, Achievements, Security Log, Terminal, Contact
@@ -211,13 +211,12 @@ motion styles were observed. Screenshots include Contact mid-entrance and final
 states; partial masking in the mid-entrance capture is intentional and clears.
 
 Scope verification: no diff in data, i18n, MDX, public assets, metadata/sitemap or
-package manifests. Original CV SHA-256 remains
-`D800848A65AB8EE3B534CEA254F3E1D2604B9E3D786DB0CBC7720BE69B8CF640`;
-the approved public PDF is also byte-for-byte unchanged. Git has no staged files.
+package manifests. The private source CV integrity was reverified; the approved
+public PDF was also byte-for-byte unchanged. Git had no staged files.
 
 ## Human review
 
-Review at `http://127.0.0.1:3018/` and `/vi`:
+The EN and VI views were reviewed using the local production build:
 
 1. Move slowly and quickly across Hero's dark negative space; pause and leave it.
    The light should diffuse and disappear while the cursor stays precise.

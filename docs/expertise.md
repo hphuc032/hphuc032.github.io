@@ -102,8 +102,8 @@ dedicated client JavaScript is introduced. Git confirms no Hero or Identity
 implementation changes relative to the Phase 9 checkpoint. The original three
 camera files and four CV files retain their previous SHA-256 hashes.
 
-Production review: http://localhost:3005/#expertise and
-http://localhost:3005/vi#expertise. Phase 10 changes remain uncommitted for review.
+The EN and VI Expertise views were reviewed locally before the Phase 10
+checkpoint.
 
 ## Phase 11 entry point
 
