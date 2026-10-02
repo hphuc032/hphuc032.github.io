@@ -22,7 +22,7 @@ export const projects: readonly Project[] = [
     indexPresentation: {
       content: {
         en: { state: "published", value: { label: "API SECURITY / BACKEND", description: "Authentication and authorization with Kong, Keycloak, JWT and RBAC in a controlled project environment." } },
-        vi: { state: "published", value: { label: "BẢO MẬT API / BACKEND", description: "Thực hành xác thực và phân quyền API với Kong, Keycloak, JWT và RBAC trong môi trường dự án." } },
+        vi: { state: "published", value: { label: "BẢO MẬT API / BACKEND", description: "Thực hành xác thực và phân quyền API với Kong, Keycloak, JWT và RBAC trong môi trường dự án có kiểm soát." } },
       },
       tools: ["FastAPI", "Keycloak", "Kong", "JWT", "Docker"],
     },
@@ -61,7 +61,7 @@ export const projects: readonly Project[] = [
       en: { state: "published", value: { title: "Network Traffic Analysis", summary: "Packet and protocol analysis as a hands-on learning practice." } },
       vi: { state: "published", value: { title: "Network Traffic Analysis", summary: "Thực hành phân tích gói tin và giao thức trong quá trình học tập." } },
     },
-    category: { en: { state: "published", value: "Network Security" }, vi: { state: "published", value: "An toàn mạng" } },
+    category: { en: { state: "published", value: "Network Security" }, vi: { state: "published", value: "An ninh mạng" } },
     overview: {
       en: { state: "published", value: "A network traffic analysis project. The related hands-on practice includes Wireshark, TCP/IP, DNS and HTTP / HTTPS traffic analysis." },
       vi: { state: "published", value: "Dự án phân tích lưu lượng mạng. Phạm vi thực hành liên quan gồm Wireshark, TCP/IP, DNS và phân tích lưu lượng HTTP / HTTPS." },

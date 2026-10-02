@@ -48,7 +48,7 @@ try {
     const text = await page.locator('main').innerText();
     for (const entry of unpublished) assert.ok(!text.includes(entry.title), entry.slug);
     assert.doesNotMatch(text, /pending|review|đang duyệt|chờ duyệt/i);
-    if (publishedWriteups().length === 0) assert.ok(text.includes(locale === 'vi' ? 'Chưa có bài CTF writeup nào được xuất bản.' : 'No CTF writeups are published yet.'));
+    if (publishedWriteups().length === 0) assert.ok(text.includes(locale === 'vi' ? 'Chưa có bài giải CTF nào được xuất bản.' : 'No CTF writeups are published yet.'));
     const log = page.locator('.writeups-index a').filter({ hasText: 'SECURITY LOG' });
     assert.equal(new URL(await log.getAttribute('href'), base).pathname.replace(/\/$/, ''), `${prefix}/log`);
     await noOverflow();

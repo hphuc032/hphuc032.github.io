@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { BilingualNotFoundContent } from "@/components/layout/NotFoundContent";
 import { editorialFont, technicalFont } from "@/styles/fonts";
+import { publicAssetPath } from "@/lib/deployment-path";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Page not found — carwyn.sec",
   description: "The requested page is unavailable or has not been published.",
   robots: { index: false, follow: false },
+  icons: { icon: publicAssetPath("/favicon.svg") },
 };
 
 export default function GlobalNotFound() {

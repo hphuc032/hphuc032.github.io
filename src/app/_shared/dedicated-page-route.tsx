@@ -16,11 +16,11 @@ const metadataCopy = {
   },
   writeups: {
     en: { title: "Writeups — carwyn.sec", description: "The reviewed CTF and challenge writeup archive for carwyn.sec." },
-    vi: { title: "Writeups — carwyn.sec", description: "Kho bài CTF và thử thách đã được rà soát của carwyn.sec." },
+    vi: { title: "Writeups — carwyn.sec", description: "Kho bài giải CTF và thử thách đã được rà soát của carwyn.sec." },
   },
   about: {
     en: { title: "About Nguyen Hoang Phuc — carwyn.sec", description: "Identity, practical security capability, work experience, and verified progression." },
-    vi: { title: "Giới thiệu Nguyen Hoang Phuc — carwyn.sec", description: "Danh tính, năng lực bảo mật thực hành, kinh nghiệm và quá trình đã được xác minh." },
+    vi: { title: "Giới thiệu Nguyen Hoang Phuc — carwyn.sec", description: "Giới thiệu, năng lực bảo mật thực hành, kinh nghiệm làm việc và tiến trình đã được xác minh." },
   },
   terminal: {
     en: { title: "Terminal — carwyn.sec", description: "A predefined local interface into the published carwyn.sec portfolio record." },

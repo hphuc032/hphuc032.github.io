@@ -70,7 +70,7 @@ try {
   const origin = await page.evaluate(() => performance.timeOrigin);
   await page.evaluate(() => history.replaceState(null, "", "?review=global#about"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
-  await page.waitForURL(url => url.pathname.replace(/\/$/, "") === "/vi" && url.search === "?review=global" && url.hash === "#about");
+  await page.waitForURL(url => url.pathname.replace(/\/$/, "") === "/vi" && url.search === "" && url.hash === "#about");
   await page.waitForFunction(() => document.documentElement.lang === "vi");
   if (!staticExport) {
     assert.equal(await page.evaluate(() => performance.timeOrigin), origin, "locale switch must not reload in normal mode");
