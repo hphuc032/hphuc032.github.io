@@ -1,5 +1,5 @@
 import type { Locale } from "./locales";
-import { isPublishedDedicatedPath } from "@/data/page-publication";
+import { canonicalPublicPath, isPublishedDedicatedPath, type SiteNavigationId } from "@/data/page-publication";
 import { isPublishedCase } from "@/data/project-publication";
 import { isPublishedLog } from "@/data/security-log-publication";
 
@@ -8,25 +8,24 @@ export type SectionId = (typeof sectionIds)[number];
 
 export const globalUI = {
   en: {
-    menu: "Index", close: "Close", navigation: "Site navigation", language: "Language",
-    labels: ["Identity", "Expertise", "Operations", "Experience", "Achievements", "Log", "Contact"],
-    unavailable: "This section is not published yet.", translationUnavailable: "Translation not yet published",
+    menu: "Menu", close: "Close", navigation: "Primary navigation", language: "Language",
+    sectionLabels: ["Identity", "Expertise", "Operations", "Experience", "Achievements", "Log", "Contact"],
+    navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
+    translationUnavailable: "Translation not yet published",
     online: "SYSTEM ONLINE", compactOnline: "ONLINE", location: "VIETNAM / UTC+7", system: "SYSTEM",
     initializing: "INITIALIZING CARWYN.SEC", ready: "INTERFACE READY", home: "carwyn.sec — Home",
   },
   vi: {
-    menu: "Mục lục", close: "Đóng", navigation: "Điều hướng trang", language: "Ngôn ngữ",
-    labels: ["Giới thiệu", "Chuyên môn", "Dự án", "Kinh nghiệm", "Thành tựu", "Security Log", "Liên hệ"],
-    unavailable: "Mục này chưa được công bố.", translationUnavailable: "Bản dịch chưa được công bố",
+    menu: "Menu", close: "Đóng", navigation: "Điều hướng chính", language: "Ngôn ngữ",
+    sectionLabels: ["Giới thiệu", "Chuyên môn", "Dự án", "Kinh nghiệm", "Thành tựu", "Security Log", "Liên hệ"],
+    navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
+    translationUnavailable: "Bản dịch chưa được công bố",
     online: "HỆ THỐNG TRỰC TUYẾN", compactOnline: "TRỰC TUYẾN", location: "VIỆT NAM / UTC+7", system: "HỆ THỐNG",
     initializing: "KHỞI TẠO CARWYN.SEC", ready: "GIAO DIỆN SẴN SÀNG", home: "carwyn.sec — Trang chủ",
   },
-} satisfies Record<Locale, { menu: string; close: string; navigation: string; language: string; labels: readonly string[]; unavailable: string; translationUnavailable: string; online: string; compactOnline: string; location: string; system: string; initializing: string; ready: string; home: string }>;
+} satisfies Record<Locale, { menu: string; close: string; navigation: string; language: string; sectionLabels: readonly string[]; navigationLabels: Record<SiteNavigationId, string>; translationUnavailable: string; online: string; compactOnline: string; location: string; system: string; initializing: string; ready: string; home: string }>;
 
-export function publicPath(path: string) {
-  const unprefixed = path.replace(/^\/(en|vi)(?=\/|$)/, "") || "/";
-  return unprefixed === "/" ? unprefixed : unprefixed.replace(/\/+$/, "");
-}
+export const publicPath = canonicalPublicPath;
 
 // Explicit publication registry. Future content adds reviewed equivalents here.
 // Unknown equivalents remain unavailable rather than silently falling back.

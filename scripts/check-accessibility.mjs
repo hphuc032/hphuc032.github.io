@@ -161,7 +161,8 @@ try {
 
   const page = await context.newPage();
   watch(page, "interactions");
-  for (const [path, menuName, closeName] of [["/", "Index", "Close"], ["/vi", "Mục lục", "Đóng"]]) {
+  await page.setViewportSize({ width: 430, height: 812 });
+  for (const [path, menuName, closeName] of [["/", "Menu", "Close"], ["/vi", "Menu", "Đóng"]]) {
     await page.goto(base + path);
     const skip = page.locator(".skip-link");
     await page.keyboard.press("Tab");
@@ -193,6 +194,7 @@ try {
   }
   console.log("PASS skip link, modal naming/state, Escape and focus return in EN/VI");
 
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(base + "/");
   const operationName = await page.locator(".operation-link").first().ariaSnapshot();
   assert.match(operationName, /View case study/);
@@ -201,9 +203,10 @@ try {
   assert.equal(await page.locator('.language-selector').first().getByRole("link", { name: "English", exact: true }).getAttribute("aria-current"), "page");
   await page.locator("#operations").scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector(".status-section")?.textContent?.includes("03"));
-  await page.getByRole("button", { name: "Index", exact: true }).click();
-  assert.equal(await page.locator('.index-links a[href$="#operations"]').getAttribute("aria-current"), "location");
-  await page.keyboard.press("Escape");
+  assert.equal(await page.locator(".site-brand").getAttribute("aria-current"), "page");
+  await page.goto(base + "/operations/secure-api-gateway");
+  assert.equal(await page.locator('.desktop-navigation a[aria-current="page"]').textContent(), "Projects");
+  await page.goto(base + "/");
   const focusables = page.locator('a[href]:visible,button:visible,input:visible,[tabindex="0"]:visible');
   const focusCount = await focusables.count();
   for (let index = 0; index < focusCount + 2; index++) {

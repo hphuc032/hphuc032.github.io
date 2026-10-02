@@ -104,8 +104,8 @@ try {
   assert.ok(await page.locator("#terminal input").evaluate(el => el === document.activeElement));
   console.log("PASS selection/native input deferral and immediate Terminal interaction");
 
-  await page.getByRole("button", { name: "Index", exact: true }).click();
-  await page.locator('.index-links a[href$="#operations"]').click();
+  await page.goto(base + "/#operations");
+  await page.locator("#operations").scrollIntoViewIfNeeded();
   await page.waitForTimeout(1400);
   const operation = page.locator(".operation-link").first(); await operation.hover();
   await paint(page, ".operation-row", 35, 200);
@@ -115,7 +115,7 @@ try {
   assert.equal(await page.locator(".operation-preview").first().evaluate(el => getComputedStyle(el).opacity), "1");
   await page.keyboard.press("Enter"); await page.locator(".case-study").waitFor();
   assert.equal(await page.locator(".liquid-surface,[data-reveal],canvas").count(), 0);
-  await page.goBack(); await page.locator("#operations").waitFor();
+  await page.goto(base + "/#operations"); await page.locator("#operations").waitFor();
   await page.locator(".site-header a[lang=vi]").click(); await page.waitForFunction(() => document.documentElement.lang === "vi");
   assert.equal(new URL(page.url()).hash, "#operations");
   await paint(page, ".operation-row", 20);
