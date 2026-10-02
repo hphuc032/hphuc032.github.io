@@ -1,0 +1,83 @@
+name: Validate carwyn.sec PR
+
+on:
+  pull_request:
+    branches: ["redesign/multipage-v2", "main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  source-and-server:
+    name: Source and normal Next.js
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and type-check
+        run: npm run lint && npm run type-check
+
+      - name: Validate atmosphere model
+        run: node scripts/check-atmosphere-model.mjs
+
+      - name: Build normal Next.js
+        run: npm run build
+
+      - name: Validate normal routes
+        shell: bash
+        run: |
+          npm run start > "$RUNNER_TEMP/carwyn-next.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=false
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then
+            cat "$RUNNER_TEMP/carwyn-next.log"
+            exit 1
+          fi
+          npm run check:routes -- http://127.0.0.1:3000 --production
+
+  github-pages:
+    name: GitHub Pages static export
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_TARGET: github-pages
+      SITE_URL: https://hphuc032.github.io
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build:github-pages
+
+      - name: Validate static routes, assets and SEO
+        run: npm run check:static-export
