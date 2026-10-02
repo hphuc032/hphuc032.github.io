@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
+    "predev": "node scripts/prepare-writeup-assets.mjs",
     "build": "node scripts/build.mjs",
     "build:github-pages": "node scripts/build.mjs --github-pages",
     "start": "next start --hostname 127.0.0.1",
@@ -22,7 +23,10 @@
     "check:projects": "node scripts/check-projects.mjs",
     "sync:writeups": "node --use-env-proxy scripts/sync-writeups.mjs",
     "check:writeups": "node scripts/check-writeups.mjs",
-    "test:writeups": "node --test scripts/writeup-pipeline.test.mjs"
+    "test:writeups": "node --test scripts/writeup-pipeline.test.mjs scripts/writeup-rendering.test.mjs",
+    "prepare:writeups": "node scripts/prepare-writeup-assets.mjs",
+    "check:writeups-ui": "node scripts/check-writeups-ui.mjs",
+    "check:writeups-export": "node scripts/check-writeups-export.mjs"
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
@@ -31,6 +35,8 @@
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
     "server-only": "0.0.1",
     "three": "0.182.0"
   },

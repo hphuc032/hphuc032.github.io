@@ -34,6 +34,9 @@ jobs:
       - name: Validate atmosphere model
         run: node scripts/check-atmosphere-model.mjs
 
+      - name: Validate local writeups and safe Markdown renderer
+        run: npm run check:writeups && npm run test:writeups
+
       - name: Build normal Next.js
         run: npm run build
 
@@ -80,4 +83,4 @@ jobs:
         run: npm run build:github-pages
 
       - name: Validate static routes, assets and SEO
-        run: npm run check:static-export
+        run: npm run check:static-export && npm run check:writeups-export

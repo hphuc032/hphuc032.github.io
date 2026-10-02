@@ -4,7 +4,12 @@ import { dirname, extname, isAbsolute, join, posix, relative, resolve, sep } fro
 import { fileURLToPath } from 'node:url';
 import { writeupPublication } from '../../src/data/writeup-publication.ts';
 
-export const root = fileURLToPath(new URL('../../', import.meta.url));
+// CLI retains module-relative paths; bundled Next server code uses the project
+// working directory. Avoid new URL(directory, import.meta.url): Turbopack treats
+// that syntax as an asset import and cannot bundle a repository directory.
+export const root = process.env.NEXT_RUNTIME === 'nodejs'
+  ? resolve(process.cwd())
+  : resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const contentRoot = join(root, 'src/content/writeups');
 export const limits = { markdown: 1024 * 1024, image: 5 * 1024 * 1024, assets: 32, entries: 100, batch: 64 * 1024 * 1024 };
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
