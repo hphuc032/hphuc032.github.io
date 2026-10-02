@@ -67,3 +67,72 @@
 @media (prefers-reduced-motion: reduce) {
   .contact-action { transition: none; }
 }
+
+/* R10 dedicated destination; legacy Contact and Home teaser stay unchanged. */
+.dedicated-page[data-page="contact"] .dedicated-page-opening {
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+  border-bottom: 0;
+}
+.dedicated-page[data-page="contact"] .dedicated-page-opening h1 {
+  max-width: 9ch;
+  font-size: clamp(3rem, 12vw, 10rem);
+  font-weight: 500;
+  line-height: .95;
+  letter-spacing: -.065em;
+}
+.dedicated-page[data-page="contact"] .dedicated-page-opening > p {
+  max-width: 34rem;
+  margin: var(--space-12) 0 0 auto;
+  line-height: 1.8;
+}
+.contact-destination {
+  width: min(calc(100% - 2 * var(--page-gutter)), var(--wide-width));
+  margin-inline: auto;
+  padding-bottom: var(--section-space);
+}
+.contact-destination .contact-record {
+  grid-template-columns: 3rem 8rem minmax(0, 1fr);
+}
+.contact-destination .contact-record > a {
+  min-height: 8rem;
+  gap: var(--space-8);
+}
+.contact-destination .contact-value {
+  font-size: clamp(1.5rem, 2.8vw, 3rem);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.contact-destination .contact-action { gap: var(--space-3); }
+.contact-destination a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.contact-destination .contact-record:focus-within .contact-value { color: var(--accent-cyber); }
+.contact-destination .contact-record:focus-within .contact-action { transform: translateX(3px); }
+.contact-context {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+  color: var(--text-muted);
+}
+.contact-context p { max-width: 34ch; }
+.contact-context p:first-child { font-size: var(--text-metadata); }
+.contact-context p:first-child span { color: var(--text-subtle); }
+@media (hover: hover) and (pointer: fine) {
+  .contact-destination .contact-record:hover .contact-value { color: var(--accent-cyber); }
+  .contact-destination .contact-record:hover .contact-action { transform: translateX(3px); }
+}
+@media (max-width: 63.99rem) {
+  .contact-destination .contact-record { grid-template-columns: 2rem 6rem minmax(0, 1fr); }
+  .contact-destination .contact-record > a { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+}
+@media (max-width: 47.99rem) {
+  .dedicated-page[data-page="contact"] .dedicated-page-opening h1 { font-size: clamp(2rem, 13vw, 6rem); }
+  .dedicated-page[data-page="contact"] .dedicated-page-opening > p { margin-left: 0; }
+  .contact-destination .contact-record { grid-template-columns: 2rem minmax(0, 1fr); }
+  .contact-destination .contact-record > a { min-height: 6rem; padding-bottom: var(--space-8); }
+  .contact-destination .contact-value { font-size: clamp(1.35rem, 6vw, 2.2rem); }
+  .contact-context { flex-direction: column; gap: var(--space-6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-destination .contact-value, .contact-destination .contact-action { transition: none; }
+  .contact-destination .contact-record:hover .contact-action,
+  .contact-destination .contact-record:focus-within .contact-action { transform: none; }
+}
