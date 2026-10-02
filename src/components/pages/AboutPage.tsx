@@ -4,25 +4,27 @@ import { Expertise } from "@/components/home/Expertise";
 import { Identity } from "@/components/home/Identity";
 import { DedicatedPageFrame } from "@/components/pages/DedicatedPageFrame";
 import { TextLink } from "@/components/ui/TextLink";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 import { publicCv } from "@/data/contact";
 import type { Locale } from "@/i18n/locales";
+import "@/styles/about.css";
 
 const copy = {
   en: {
-    eyebrow: "ROUTE / ABOUT",
+    eyebrow: "PROFILE / ABOUT",
     title: "About",
-    description: "Identity, practical capability, work experience, and verified progression.",
-    cvTitle: "Curriculum vitae.",
-    cvDescription: "The approved public CV is available as a PDF.",
+    description: "Security practice, software testing, and the person behind carwyn.sec.",
+    cvTitle: "The profile, on paper.",
+    cvDescription: "Nguyen Hoang Phuc / Curriculum vitae / PDF",
     cvAction: "VIEW CV",
     newTab: "opens in a new tab",
   },
   vi: {
-    eyebrow: "TUYẾN / GIỚI THIỆU",
+    eyebrow: "HỒ SƠ / GIỚI THIỆU",
     title: "Giới thiệu",
-    description: "Danh tính, năng lực thực hành, kinh nghiệm làm việc và quá trình đã được xác minh.",
-    cvTitle: "Hồ sơ nghề nghiệp.",
-    cvDescription: "CV công khai đã được phê duyệt hiện có dưới dạng PDF.",
+    description: "Thực hành bảo mật, kiểm thử phần mềm và con người phía sau carwyn.sec.",
+    cvTitle: "Hồ sơ, trên trang giấy.",
+    cvDescription: "Nguyen Hoang Phuc / Hồ sơ nghề nghiệp / PDF",
     cvAction: "XEM CV",
     newTab: "mở trong thẻ mới",
   },
@@ -35,8 +37,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
     <Expertise locale={locale} />
     <Experience locale={locale} />
     <Achievements locale={locale} />
-    <section className="about-cv" aria-labelledby="about-cv-title">
+    <section id="cv" className="about-cv" aria-labelledby="about-cv-title">
       <div>
+        <SectionLabel number="05">CV</SectionLabel>
         <h2 id="about-cv-title">{content.cvTitle}</h2>
         <p>{content.cvDescription}</p>
       </div>

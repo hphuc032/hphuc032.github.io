@@ -16,7 +16,7 @@ export function Identity({ locale }: { locale: Locale }) {
   return <section id="identity" className="identity" aria-labelledby="identity-name" tabIndex={-1}>
     <div className="identity-inner">
       <div className="identity-introduction">
-        <SectionLabel number="02">{copy.section}</SectionLabel>
+        <SectionLabel number="01">{copy.section}</SectionLabel>
         <p>{copy.question}</p>
       </div>
       <div className="identity-composition">
