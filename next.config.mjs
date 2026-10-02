@@ -1,5 +1,6 @@
 import createMDX from "@next/mdx";
 import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
+import { publishedWriteups } from "./src/data/writeup-publication.ts";
 
 const withMDX = createMDX({});
 const isGitHubPages = process.env.DEPLOY_TARGET === "github-pages";
@@ -9,10 +10,12 @@ export default function nextConfig(phase) {
     reactStrictMode: true,
     poweredByHeader: false,
     experimental: { globalNotFound: true },
-    // Preview files are not route candidates in production. No runtime opt-in.
+    // Next 16.3 export rejects empty dynamic params. Article source exists but
+    // participates in route discovery only after explicit human publication.
+    // No sentinel route, preview candidate or post-export pruning is involved.
     pageExtensions: phase === PHASE_DEVELOPMENT_SERVER
-      ? ["preview.tsx", "ts", "tsx", "mdx"]
-      : ["ts", "tsx", "mdx"],
+      ? ["preview.tsx", ...(publishedWriteups().length ? ["writeup.tsx"] : []), "ts", "tsx", "mdx"]
+      : [...(publishedWriteups().length ? ["writeup.tsx"] : []), "ts", "tsx", "mdx"],
     devIndicators: false,
     env: {
       NEXT_PUBLIC_DEPLOY_TARGET: isGitHubPages ? "github-pages" : "",

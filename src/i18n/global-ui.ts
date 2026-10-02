@@ -2,6 +2,8 @@ import type { Locale } from "./locales";
 import { canonicalPublicPath, isPublishedDedicatedPath, type SiteNavigationId } from "@/data/page-publication";
 import { isPublishedCase } from "@/data/project-publication";
 import { isPublishedLog } from "@/data/security-log-publication";
+// Generated from publishedWriteups() at build time. Never bundle review metadata.
+import writeupPublicRoutes from "@/data/writeup-public-routes.json";
 
 export const sectionIds = ["identity", "expertise", "operations", "experience", "achievements", "log", "contact"] as const;
 export type SectionId = (typeof sectionIds)[number];
@@ -33,6 +35,7 @@ export function localizedPath(path: string, locale: Locale): string | undefined 
   const canonical = publicPath(path);
   const logRoute = canonical === "/log" || (canonical.startsWith("/log/") && isPublishedLog(canonical.slice("/log/".length), locale));
   const dedicatedRoute = isPublishedDedicatedPath(canonical, locale);
-  if (canonical !== "/" && canonical !== "/dev/design-system" && !dedicatedRoute && !logRoute && !(canonical.startsWith("/operations/") && isPublishedCase(canonical.slice("/operations/".length), locale))) return undefined;
+  const writeupRoute = canonical.startsWith("/writeups/") && (writeupPublicRoutes as readonly string[]).includes(canonical.slice("/writeups/".length));
+  if (canonical !== "/" && canonical !== "/dev/design-system" && !dedicatedRoute && !logRoute && !writeupRoute && !(canonical.startsWith("/operations/") && isPublishedCase(canonical.slice("/operations/".length), locale))) return undefined;
   return locale === "en" ? canonical : `/vi${canonical === "/" ? "" : canonical}`;
 }

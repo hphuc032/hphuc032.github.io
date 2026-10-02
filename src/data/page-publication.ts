@@ -49,7 +49,7 @@ export function activeNavigationItem(path: string): SiteNavigationId | undefined
   const canonical = canonicalPublicPath(path);
   if (canonical === "/") return "home";
   if (canonical === "/projects" || canonical.startsWith("/operations/")) return "projects";
-  if (canonical === "/writeups" || canonical === "/log" || canonical.startsWith("/log/")) return "writeups";
+  if (canonical === "/writeups" || canonical.startsWith("/writeups/") || canonical === "/log" || canonical.startsWith("/log/")) return "writeups";
   return dedicatedPagePublication.find(record => canonical === `/${record.segment}`)?.id;
 }
 
@@ -59,4 +59,3 @@ export function isPublishedDedicatedPath(path: string, locale: Locale) {
     record.segment === segment && (record.locales as readonly Locale[]).includes(locale),
   );
 }
-

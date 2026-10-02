@@ -5,6 +5,7 @@ import { publishedCase, projects } from "@/data/projects";
 import { casePath } from "@/data/project-publication";
 import { logArticlePath, logIndexPath, securityLogPublication } from "@/data/security-log-publication";
 import { absoluteSiteUrl, getSiteUrl } from "@/lib/site-metadata";
+import { writeupSitemapPaths } from "@/lib/writeups/publication";
 
 export const dynamic = "force-static";
 
@@ -36,5 +37,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       return locales.filter(locale => (entry.locales as readonly string[]).includes(locale)).map(locale => localizedEntry(paths, locale));
     }),
   ];
-  return [...homeRoutes, ...dedicatedRoutes, ...projectRoutes, ...logRoutes];
+  const writeupRoutes = writeupSitemapPaths().flatMap(paths => locales.map(locale => localizedEntry(paths, locale)));
+  return [...homeRoutes, ...dedicatedRoutes, ...projectRoutes, ...logRoutes, ...writeupRoutes];
 }

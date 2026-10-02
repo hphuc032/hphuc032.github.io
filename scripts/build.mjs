@@ -1,6 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, renameSync } from "node:fs";
 import { join } from "node:path";
+import { prepareWriteupAssets } from "./prepare-writeup-assets.mjs";
+
+await prepareWriteupAssets();
 
 const productionUrl = "https://hphuc032.github.io";
 const isGitHubPages = process.env.DEPLOY_TARGET === "github-pages" || process.argv.includes("--github-pages");
