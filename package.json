@@ -19,6 +19,7 @@
     "check:localization": "node scripts/check-localization.mjs",
     "check:metadata": "node scripts/check-metadata.mjs",
     "check:static-export": "node scripts/check-static-export.mjs",
+    "check:projects": "node scripts/check-projects.mjs",
     "sync:writeups": "node --use-env-proxy scripts/sync-writeups.mjs",
     "check:writeups": "node scripts/check-writeups.mjs",
     "test:writeups": "node --test scripts/writeup-pipeline.test.mjs"

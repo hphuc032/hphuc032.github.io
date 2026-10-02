@@ -19,10 +19,24 @@ export const projects: readonly Project[] = [
       vi: { state: "published", value: "Secure API Gateway tập hợp việc thực hành xác thực, phân quyền, RBAC và kiểm thử phân quyền API. Các công nghệ dưới đây đã được sử dụng trong dự án." },
     },
     technologyIds: ["FastAPI", "PostgreSQL", "Keycloak", "Kong", "Docker", "JWT", "OAuth2", "OpenID Connect (OIDC)", "RBAC"],
+    indexPresentation: {
+      content: {
+        en: { state: "published", value: { label: "API SECURITY / BACKEND", description: "Authentication and authorization with Kong, Keycloak, JWT and RBAC in a controlled project environment." } },
+        vi: { state: "published", value: { label: "BẢO MẬT API / BACKEND", description: "Thực hành xác thực và phân quyền API với Kong, Keycloak, JWT và RBAC trong môi trường dự án." } },
+      },
+      tools: ["FastAPI", "Keycloak", "Kong", "JWT", "Docker"],
+    },
   },
   {
     ...projectPublication[1], id: "vulnerability-assessment", featuredOrder: 2,
     state: "published", caseStudyState: "published", visualConcept: "assessment",
+    indexPresentation: {
+      content: {
+        en: { state: "published", value: { label: "SECURITY TESTING / ASSESSMENT", description: "Hands-on labs in service enumeration, vulnerability identification and security assessment." } },
+        vi: { state: "published", value: { label: "KIỂM THỬ BẢO MẬT / ĐÁNH GIÁ", description: "Thực hành thu thập thông tin dịch vụ, nhận diện lỗ hổng và đánh giá bảo mật trong bài lab." } },
+      },
+      tools: ["Kali Linux", "Nmap", "Metasploit", "OWASP ZAP", "Burp Suite"],
+    },
     content: {
       en: { state: "published", value: { title: "Vulnerability Assessment", summary: "Security assessment practice in an educational lab context." } },
       vi: { state: "published", value: { title: "Vulnerability Assessment", summary: "Thực hành đánh giá bảo mật trong bối cảnh bài lab học tập." } },
@@ -36,6 +50,13 @@ export const projects: readonly Project[] = [
   {
     ...projectPublication[2], id: "network-traffic-analysis", featuredOrder: 3,
     state: "published", caseStudyState: "published", visualConcept: "protocol",
+    indexPresentation: {
+      content: {
+        en: { state: "published", value: { label: "NETWORK SECURITY / ANALYSIS", description: "Packet and protocol analysis with Wireshark. Comparing plaintext HTTP visibility with encrypted HTTPS traffic." } },
+        vi: { state: "published", value: { label: "AN NINH MẠNG / PHÂN TÍCH", description: "Phân tích gói tin và giao thức bằng Wireshark. Đối chiếu nội dung HTTP dạng rõ với lưu lượng HTTPS được mã hóa." } },
+      },
+      tools: ["Wireshark", "TCP/IP", "DNS", "HTTP / HTTPS"],
+    },
     content: {
       en: { state: "published", value: { title: "Network Traffic Analysis", summary: "Packet and protocol analysis as a hands-on learning practice." } },
       vi: { state: "published", value: { title: "Network Traffic Analysis", summary: "Thực hành phân tích gói tin và giao thức trong quá trình học tập." } },
