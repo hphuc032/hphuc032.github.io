@@ -114,7 +114,8 @@ try {
   await calm(page); await operation.focus(); await page.waitForTimeout(400);
   assert.equal(await page.locator(".operation-preview").first().evaluate(el => getComputedStyle(el).opacity), "1");
   await page.keyboard.press("Enter"); await page.locator(".case-study").waitFor();
-  assert.equal(await page.locator(".liquid-surface,[data-reveal],canvas").count(), 0);
+  assert.equal(await page.locator(".liquid-surface,[data-reveal],canvas:not(.global-atmosphere)").count(), 0);
+  assert.equal(await page.locator(".global-atmosphere").count(), 1);
   await page.goto(base + "/#operations"); await page.locator("#operations").waitFor();
   await page.locator(".site-header a[lang=vi]").click(); await page.waitForFunction(() => document.documentElement.lang === "vi");
   assert.equal(new URL(page.url()).hash, "#operations");

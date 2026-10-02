@@ -148,7 +148,7 @@ try {
     homepage: await measureRoute("/"),
     article: await measureRoute(`/log/${slug}`),
   };
-  assert.equal(performance.article.canvasCount, 0);
+  assert.equal(performance.article.canvasCount, 1, "article has only the shared decorative atmosphere canvas");
   await writeFile("test-results/security-log/validation.json", JSON.stringify({ results, layoutShift, performance, errors }, null, 2));
   assert.deepEqual(errors, []);
   console.log(`PASS 404, reduced motion, touch, no-JS article, console/hydration; layout shift ${layoutShift}`, performance);

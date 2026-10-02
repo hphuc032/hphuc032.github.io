@@ -1,0 +1,13 @@
+/* The knockout mask reserves empty dark space for decoration.
+   Chrome/dialogs sit above it; typography and paper surfaces receive no ink. */
+.global-atmosphere {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (forced-colors: active) { .global-atmosphere { display: none; } }

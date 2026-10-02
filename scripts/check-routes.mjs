@@ -81,7 +81,9 @@ for (const locale of ["en", "vi"]) {
     assert.equal(response.status, 200, path);
     assert.ok(html.includes(`<html lang="${locale}"`), `${path} document language`);
     assert.ok(html.includes(marker), `${path} server-rendered Security Log content`);
-    assert.ok(!html.includes('class="network-object"') && !html.includes("<canvas"), `${path} excludes homepage WebGL`);
+    assert.ok(!html.includes('class="network-object"'), `${path} excludes homepage WebGL`);
+    assert.equal((html.match(/<canvas/g) ?? []).length, 1, `${path} contains only the shared decorative Canvas2D atmosphere`);
+    assert.ok(html.includes('class="global-atmosphere"'), `${path} uses the shared atmosphere`);
     console.log(`PASS ${path}: published Security Log SSR without WebGL`);
   }
 }

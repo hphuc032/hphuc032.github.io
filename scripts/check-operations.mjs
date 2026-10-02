@@ -33,7 +33,8 @@ try {
     for (const slug of slugs) {
       await page.goto(base + prefix + "/operations/" + slug);
       assert.equal(await page.locator(".case-study h1").count(), 1);
-      assert.equal(await page.locator("canvas,.network-object").count(), 0, "no homepage WebGL on detail routes");
+      assert.equal(await page.locator("canvas:not(.global-atmosphere),.network-object").count(), 0, "no homepage WebGL on detail routes");
+      assert.equal(await page.locator("canvas.global-atmosphere").count(), 1, "one shared atmosphere on detail routes");
       for (const width of [375, 430, 768, 1024, 1440, 1920]) {
         await page.setViewportSize({ width, height: 1000 });
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${locale}/${slug}/${width} overflow`);
