@@ -290,6 +290,7 @@ try {
   ]) {
     const missing = await context.newPage();
     const response = await missing.goto(base + path, { waitUntil: "domcontentloaded" });
+    await missing.waitForLoadState("networkidle");
     const missingAudit = { status: response?.status(), title: await missing.title(), text: (await missing.locator("body").innerText()).trim(), links: await missing.locator("a[href]").count(), lang: await missing.locator("html").getAttribute("lang") };
     assert.equal(missingAudit.status, 404, `${path}: HTTP 404`);
     assert.equal(missingAudit.lang, locale, `${path}: localized document language`);

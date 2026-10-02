@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import type { gsap } from "gsap";
 import type { Locale } from "@/i18n/locales";
 import { useReducedMotion } from "@/hooks/use-motion-preference";
@@ -11,6 +12,7 @@ const visited = new Set<string>();
 /** Scoped, once-per-session arrivals. Content is never hidden until GSAP is ready. */
 export function ChapterMotion({ locale }: { locale: Locale }) {
   const reduced = useReducedMotion();
+  const pathname = usePathname();
   useEffect(() => {
     if (reduced) return;
     const main = document.getElementById("main-content");
@@ -39,8 +41,9 @@ export function ChapterMotion({ locale }: { locale: Locale }) {
         const element = entry.target as HTMLElement;
         if (!entry.isIntersecting) { if (contexts.has(element)) settle(element); continue; }
         const key = element.dataset.arrival ?? element.dataset.revealKey!;
-        if (visited.has(key)) continue;
-        visited.add(key);
+        const visitKey = `${pathname}:${key}`;
+        if (visited.has(visitKey)) continue;
+        visited.add(visitKey);
         // Direct hash jumps, restored scroll, and fast scrolling stay fully resolved.
         if (document.hidden || entry.boundingClientRect.top < innerHeight) { settle(element); continue; }
         void import("gsap").then(({ gsap }) => {
@@ -65,7 +68,7 @@ export function ChapterMotion({ locale }: { locale: Locale }) {
             const tween = gsap.fromTo(targets, from,
               { opacity: 1, x: 0, y: 0, yPercent: 0, rotationX: 0, skewY: 0,
                 ...(pattern || statement ? { clipPath: "inset(-25% -5% -25% -5%)" } : {}),
-                duration: compact || pattern === "chapter" || element.closest(".achievement-record") ? timing.normal : timing.editorial,
+                duration: compact || pattern === "chapter" || element.closest(".achievement-record") ? timing.normal : timing.reveal,
                 stagger: statement && !compact ? timing.stagger : 0,
                 ease: timing.ease, paused: Boolean(pattern), onComplete: () => settle(element) });
             if (pattern) {
@@ -81,8 +84,9 @@ export function ChapterMotion({ locale }: { locale: Locale }) {
 
     for (const element of main.querySelectorAll<HTMLElement>("[data-arrival], [data-reveal]")) {
       const key = element.dataset.arrival ?? element.dataset.revealKey!;
-      if (visited.has(key) || element.getBoundingClientRect().top < innerHeight) {
-        visited.add(key);
+      const visitKey = `${pathname}:${key}`;
+      if (visited.has(visitKey) || element.getBoundingClientRect().top < innerHeight) {
+        visited.add(visitKey);
         continue;
       }
       observer.observe(element);
@@ -104,6 +108,6 @@ export function ChapterMotion({ locale }: { locale: Locale }) {
       main.removeEventListener("focusin", resolve);
       for (const element of contexts.keys()) settle(element);
     };
-  }, [locale, reduced]);
+  }, [locale, pathname, reduced]);
   return null;
 }

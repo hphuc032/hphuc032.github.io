@@ -32,6 +32,7 @@ export function GlobalAtmosphere() {
     let regions: ProtectedRegion[] = [];
     let covered = false;
     let menuOpen = Boolean(document.querySelector("dialog[open]"));
+    let transition = Boolean(document.querySelector("main[data-page-motion]"));
     let disposed = false;
 
     const stop = () => {
@@ -39,7 +40,7 @@ export function GlobalAtmosphere() {
       clearTimeout(timer); timer = undefined;
       element.dataset.running = "false";
     };
-    const visible = () => !document.hidden && !contrast.matches && !covered && !menuOpen;
+    const visible = () => !document.hidden && !contrast.matches && !covered && !menuOpen && !transition;
     const paint = (now: number) => field.draw(context, now, !reduced.matches, regions, scroll);
     const schedule = () => {
       if (disposed || !visible() || reduced.matches) return;
@@ -119,6 +120,8 @@ export function GlobalAtmosphere() {
     window.addEventListener("resize", resize, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     const onPreference = () => reconcile();
+    const onTransition = (event: Event) => { transition = Boolean((event as CustomEvent<boolean>).detail); reconcile(); };
+    document.addEventListener("carwyn:motion-busy", onTransition);
     document.addEventListener("visibilitychange", onPreference);
     reduced.addEventListener("change", onPreference);
     contrast.addEventListener("change", onPreference);
@@ -129,6 +132,7 @@ export function GlobalAtmosphere() {
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onPreference);
+      document.removeEventListener("carwyn:motion-busy", onTransition);
       reduced.removeEventListener("change", onPreference);
       contrast.removeEventListener("change", onPreference);
       element.width = element.height = 1;

@@ -10,6 +10,7 @@ export function motionTiming() {
     fast: seconds("--duration-fast"),
     normal: seconds("--duration-medium"),
     editorial: seconds("--duration-slow"),
+    reveal: seconds("--duration-reveal"),
     initialization: seconds("--duration-initialization"),
     stagger: seconds("--duration-stagger"),
     ease: "power3.out",

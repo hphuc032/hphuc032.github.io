@@ -1,18 +1,32 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/locales";
 import { useReducedMotion } from "@/hooks/use-motion-preference";
-import { WaterWake } from "@/lib/water-wake";
+import type { WaterWake } from "@/lib/water-wake";
+import { motionIdentity, motionProfile } from "@/data/motion-config";
 
 /** One bounded wake and RAF, with the approved DOM depth response kept intact. */
 export function PointerAtmosphere({ locale }: { locale: Locale }) {
   const reduced = useReducedMotion();
+  const pathname = usePathname();
   useEffect(() => {
     if (reduced) return;
+    const main = document.getElementById("main-content");
+    const profile = motionProfile(pathname);
+    if (!main || !profile.wake) return;
     const media = matchMedia("(hover: hover) and (pointer: fine)");
     const contrast = matchMedia("(forced-colors: active)");
+    const home = motionIdentity(pathname) === "home";
+    // Reuse the one wake renderer in empty page space, never an article/portrait/input.
+    if (!home) main.dataset.liquid = String(profile.wake);
     const surfaces = [...document.querySelectorAll<HTMLElement>("[data-liquid]")];
+    let ownedSurface: HTMLDivElement | undefined;
+    let disposed = false;
+    let loading = false;
+    let menuOpen = Boolean(document.querySelector("dialog[open]"));
+    let transitioning = Boolean(document.querySelector("main[data-page-motion]"));
     let wake: WaterWake | undefined;
     let current: HTMLElement | undefined;
     let field: HTMLCanvasElement | null = null;
@@ -41,7 +55,7 @@ export function PointerAtmosphere({ locale }: { locale: Locale }) {
     };
     const draw = (now: number) => {
       frame = 0;
-      if (!current || !field || !context || !wake || document.hidden || !media.matches || contrast.matches) { reset(); return; }
+      if (!current || !field || !context || !wake || document.hidden || !media.matches || contrast.matches || menuOpen || transitioning) { reset(); return; }
       const dt = Math.min(now - (time || now - 16), 40); time = now;
       const follow = 1 - Math.exp(-dt / 110);
       x += (tx - x) * follow; y += (ty - y) * follow;
@@ -65,20 +79,41 @@ export function PointerAtmosphere({ locale }: { locale: Locale }) {
     const calm = () => { lastMove = 0; energy = 0; interrupted = true; };
     const move = (event: PointerEvent) => {
       if (!media.matches || contrast.matches || event.pointerType !== "mouse" || document.hidden) return;
+      if (menuOpen || transitioning) { reset(); return; }
       if (event.buttons || getSelection()?.isCollapsed === false) { reset(); return; }
       const target = event.target instanceof Element ? event.target : null;
       const next = target?.closest<HTMLElement>("[data-liquid]");
       if (target?.closest('[data-native-cursor],input,textarea,select,[contenteditable="true"],.terminal-console')) { reset(); return; }
+      if (!home && target?.closest(".identity,article,.log-prose,.writeup-prose,p,pre,table,figure,img,button")) { calm(); return; }
       if (!next || target?.closest("p")) { calm(); return; }
+      if (!wake) {
+        // Touch/reduced motion never request this renderer. No per-event React state.
+        if (!loading) {
+          loading = true;
+          void import("@/lib/water-wake").then(({ WaterWake }) => {
+            if (!disposed) wake = new WaterWake();
+          }).catch(() => { loading = false; });
+        }
+        return;
+      }
       const now = performance.now();
       if (next !== current) {
         reset(); current = next; bounds = next.getBoundingClientRect();
         field = next.querySelector<HTMLCanvasElement>(".liquid-light");
+        if (!field && !home && next === main) {
+          ownedSurface ??= document.createElement("div");
+          ownedSurface.className = "liquid-surface";
+          ownedSurface.setAttribute("aria-hidden", "true");
+          field = document.createElement("canvas");
+          field.className = "liquid-light";
+          field.width = field.height = 1;
+          ownedSurface.append(field);
+          next.prepend(ownedSurface);
+        }
         statements = [...next.querySelectorAll<HTMLElement>(".hero-statement")];
         if (!field) { reset(); return; }
         try { context = field.getContext("2d", { alpha: true }); } catch { reset(); return; }
         if (!context) { reset(); return; }
-        wake ??= new WaterWake();
         // Only the visible section slice has a buffer. Never a full-page/high-DPR canvas.
         width = bounds.width; top = Math.max(0, -bounds.top);
         height = Math.min(bounds.height - top, innerHeight - Math.max(0, bounds.top));
@@ -116,6 +151,10 @@ export function PointerAtmosphere({ locale }: { locale: Locale }) {
     });
     for (const surface of surfaces) observer.observe(surface);
     const visibility = () => { if (document.hidden) reset(); };
+    const menu = new MutationObserver(() => { menuOpen = Boolean(document.querySelector("dialog[open]")); if (menuOpen) reset(); });
+    const dialog = document.querySelector("dialog");
+    if (dialog) menu.observe(dialog, { attributes: true, attributeFilter: ["open"] });
+    const transition = (event: Event) => { transitioning = Boolean((event as CustomEvent<boolean>).detail); if (transitioning) reset(); };
     window.addEventListener("pointermove", move, { passive: true });
     document.addEventListener("pointerleave", calm);
     window.addEventListener("blur", reset);
@@ -124,10 +163,13 @@ export function PointerAtmosphere({ locale }: { locale: Locale }) {
     window.addEventListener("resize", reset, { passive: true });
     document.addEventListener("selectionchange", calm);
     document.addEventListener("visibilitychange", visibility);
+    document.addEventListener("carwyn:motion-busy", transition);
     media.addEventListener("change", reset);
     contrast.addEventListener("change", reset);
     return () => {
-      reset(); observer.disconnect();
+      disposed = true; reset(); observer.disconnect(); menu.disconnect();
+      ownedSurface?.remove();
+      if (!home) delete main.dataset.liquid;
       window.removeEventListener("pointermove", move);
       document.removeEventListener("pointerleave", calm);
       window.removeEventListener("blur", reset);
@@ -136,9 +178,10 @@ export function PointerAtmosphere({ locale }: { locale: Locale }) {
       window.removeEventListener("resize", reset);
       document.removeEventListener("selectionchange", calm);
       document.removeEventListener("visibilitychange", visibility);
+      document.removeEventListener("carwyn:motion-busy", transition);
       media.removeEventListener("change", reset);
       contrast.removeEventListener("change", reset);
     };
-  }, [locale, reduced]);
+  }, [locale, pathname, reduced]);
   return null;
 }

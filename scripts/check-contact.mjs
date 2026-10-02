@@ -105,7 +105,7 @@ try {
   assert.ok(pdf.headers.get("content-type")?.includes("application/pdf"));
   assert.equal(createHash("sha256").update(localCv).digest("hex"), expectedCvHash);
   assert.equal(createHash("sha256").update(Buffer.from(await pdf.arrayBuffer())).digest("hex"), expectedCvHash);
-  assert.deepEqual((await readdir("public", { recursive: true })).filter(p => p.endsWith(".pdf")), ["cv/nguyen-hoang-phuc-cv.pdf"]);
+  assert.deepEqual((await readdir("public", { recursive: true })).filter(p => p.endsWith(".pdf")).map(p => p.replaceAll("\\", "/")), ["cv/nguyen-hoang-phuc-cv.pdf"]);
   console.log("PASS immutable CV bytes and sole public PDF");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`${base}/contact`);

@@ -97,10 +97,14 @@ try {
   results.push({ idleIntervalTaskMs: (idleAfter.TaskDuration - idleBefore.TaskDuration) * 1000 });
 
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.waitForFunction(() => document.querySelector(".global-atmosphere").dataset.running === "false");
+  await page.waitForFunction(() => {
+    const state = document.querySelector(".global-atmosphere").dataset;
+    return state.mode === "static" && state.running === "false";
+  });
   const staticDraws = await page.evaluate(() => window.__atmosphereDraws); await page.waitForTimeout(1000);
   assert.equal(await page.evaluate(() => window.__atmosphereDraws), staticDraws, "live reduced-motion stops both scheduling and RAF");
   await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.waitForFunction(() => document.querySelector(".global-atmosphere").dataset.mode === "animated");
   await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, value: true }); document.dispatchEvent(new Event("visibilitychange")); });
   const hiddenDraws = await page.evaluate(() => window.__atmosphereDraws); await page.waitForTimeout(1000);
   assert.equal(await page.evaluate(() => window.__atmosphereDraws), hiddenDraws, "hidden document stops drawing");

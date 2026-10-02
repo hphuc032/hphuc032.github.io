@@ -208,6 +208,8 @@ try {
     for (const route of ["/", "/vi", "/terminal", "/vi/terminal", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"]) {
       const page = await context.newPage();
       await page.goto(base + route, { waitUntil: "domcontentloaded" });
+      // Measure the final no-JS typography, not the transient fallback font.
+      await page.evaluate(() => document.fonts.ready);
       const measurement = await inspect(page);
       assert.ok(measurement.overflow <= 1, `no-JS ${dimensions.width} ${route}`);
       assert.deepEqual(measurement.clippedText, [], `no-JS clipped text ${dimensions.width} ${route}`);
