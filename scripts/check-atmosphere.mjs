@@ -139,6 +139,7 @@ try {
   const blocked = await browser.newContext({ reducedMotion: "reduce" });
   await blocked.addInitScript(() => Object.defineProperty(window, "sessionStorage", { get() { throw new Error("storage unavailable"); } }));
   const blockedPage = await blocked.newPage(); await blockedPage.goto(base + "/projects");
+  await blockedPage.waitForFunction(() => document.querySelector(".global-atmosphere")?.dataset.intensity === "medium");
   assert.equal(await blockedPage.locator(".global-atmosphere").getAttribute("data-intensity"), "medium"); await blocked.close();
   assert.deepEqual(errors, []);
   drawTimes.sort((a, b) => a - b);

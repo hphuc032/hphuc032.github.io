@@ -40,12 +40,12 @@
 .case-eyebrow { display: flex; gap: var(--space-4); flex-wrap: wrap; }
 .case-opening h1 { font-size: clamp(2.75rem, 7vw, 7rem); max-width: 15ch; text-transform: uppercase; font-weight: 500; letter-spacing: -.055em; line-height: 1.13; margin-top: var(--space-8); }
 .case-summary { margin-top: var(--space-8); font-size: var(--text-body-lg); color: var(--text-muted); max-width: 42rem; }
-.case-overview-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 6vw, 6rem); padding-block: var(--space-16); align-items: start; }
+.case-overview-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-block: var(--space-16); align-items: start; }
 .case-overview h2, .case-prose h2 { font-size: var(--text-heading-3); font-weight: 500; margin-bottom: var(--space-6); }
 .case-overview p, .case-prose p { font-size: var(--text-body); color: var(--text-muted); line-height: 1.8; }
 .case-overview section + section { margin-top: var(--space-12); }
 .case-technologies { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); list-style: none; padding: 0; font: var(--text-metadata)/1.8 var(--font-technical), monospace; color: var(--text-muted); }
-.case-technologies li { border-bottom: 1px solid var(--border); padding-bottom: var(--space-2); }
+.case-technologies li { max-width: 100%; overflow-wrap: anywhere; border-bottom: 1px solid var(--border); padding-bottom: var(--space-2); }
 .case-prose { max-width: var(--reading-width); margin: var(--space-16) auto; }
 .case-prose p + p { margin-top: var(--space-6); }
 .case-next { border-top: 1px solid var(--border); margin-top: var(--space-8); padding-top: var(--space-8); display: flex; flex-direction: column; align-items: start; gap: var(--space-4); }
@@ -66,7 +66,7 @@
   .operation-arrow { grid-column: 2; grid-row: 2; font-size: 1.5rem; }
   .operation-preview { display: none; }
   .operations-end { flex-direction: column; }
-  .case-overview-grid { grid-template-columns: 1fr; padding-block: var(--space-8); }
+  .case-overview-grid { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-8); }
   .case-opening { padding-block: var(--space-8) var(--space-12); }
   .case-opening h1 { font-size: clamp(2.5rem, 10.7vw, 4.5rem); }
 }

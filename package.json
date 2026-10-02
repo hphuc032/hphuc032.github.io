@@ -15,6 +15,8 @@
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint . --max-warnings=0",
     "type-check": "next typegen && tsc --noEmit",
+    "check:accessibility": "node scripts/check-accessibility.mjs",
+    "check:responsive": "node scripts/check-responsive.mjs",
     "check:routes": "node scripts/check-routes.mjs",
     "check:contact": "node scripts/check-contact.mjs",
     "check:localization": "node scripts/check-localization.mjs",

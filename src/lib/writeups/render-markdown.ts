@@ -85,6 +85,7 @@ export function renderMarkdown(markdown: string, policy: MarkdownPolicy): ReactN
       src, alt, loading: "lazy", decoding: "async",
     }),
     table: ({ children }) => createElement("div", { className: "writeup-table-scroll", tabIndex: 0, role: "region", "aria-label": "Table / Bảng" }, createElement("table", null, children)),
+    th: ({ children, style }) => createElement("th", { scope: "col", style }, children),
     pre: ({ children }) => createElement("pre", { tabIndex: 0 }, children),
   };
   return createElement(ReactMarkdown, {
