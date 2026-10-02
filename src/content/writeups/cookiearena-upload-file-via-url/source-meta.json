@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "cookiearena-upload-file-via-url",
+  "slug": "cookiearena-upload-file-via-url",
+  "source": {
+    "repository": "hphuc032/ctf-writeups",
+    "ref": "f42cd29d383deafe0882020d91cb824eb03f342a",
+    "path": "CookieArena/Upload-File-via-URL/README.md",
+    "url": "https://raw.githubusercontent.com/hphuc032/ctf-writeups/f42cd29d383deafe0882020d91cb824eb03f342a/CookieArena/Upload-File-via-URL/README.md"
+  },
+  "normalization": "UTF-8; BOM removed; CRLF/CR converted to LF; prose unchanged",
+  "upstreamSha256": "e62cc42c62b70f1b21d9b54342b80299dfca16c6a8c76042c9d249be3bc45dca",
+  "sourceSha256": "e62cc42c62b70f1b21d9b54342b80299dfca16c6a8c76042c9d249be3bc45dca",
+  "findings": {
+    "errors": [],
+    "warnings": [
+      "remote-image: requires approved deterministic local copy"
+    ],
+    "referencedAssets": []
+  },
+  "assets": []
+}

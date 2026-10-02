@@ -18,7 +18,10 @@
     "check:contact": "node scripts/check-contact.mjs",
     "check:localization": "node scripts/check-localization.mjs",
     "check:metadata": "node scripts/check-metadata.mjs",
-    "check:static-export": "node scripts/check-static-export.mjs"
+    "check:static-export": "node scripts/check-static-export.mjs",
+    "sync:writeups": "node --use-env-proxy scripts/sync-writeups.mjs",
+    "check:writeups": "node scripts/check-writeups.mjs",
+    "test:writeups": "node --test scripts/writeup-pipeline.test.mjs"
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
