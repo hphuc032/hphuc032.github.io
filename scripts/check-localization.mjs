@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { mkdir, writeFile } from "node:fs/promises";
-import { homepageHashSections, operationSlugs, responsiveWidths, securityLogSlug } from "./test-fixtures.mjs";
+import { dedicatedPageSegments, homepageHashSections, operationSlugs, responsiveWidths, securityLogSlug } from "./test-fixtures.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH ?? "playwright");
@@ -118,6 +118,23 @@ try {
   }
   console.log("PASS all eight meaningful homepage hashes survive EN/VI switching without replaying initialization");
 
+  for (const segment of dedicatedPageSegments) {
+    await page.goto(`${base}/${segment}`);
+    assert.equal(await page.locator("main").getAttribute("data-page"), segment);
+    if (staticExport) {
+      await switchStaticLocale("vi", `/vi/${segment}`);
+    } else {
+      await Promise.all([
+        page.waitForURL(`**/vi/${segment}`),
+        page.locator('.site-header .language-selector a[lang="vi"]').click(),
+      ]);
+    }
+    assert.equal(new URL(page.url()).pathname.replace(/\/$/, ""), `/vi/${segment}`);
+    assert.equal(await page.locator("main").getAttribute("data-page"), segment);
+    assert.equal(await page.locator("html").getAttribute("lang"), "vi");
+  }
+  console.log("PASS five dedicated route pairs preserve page identity and locale switching");
+
   for (const slug of cases) {
     for (const locale of ["en", "vi"]) {
       const prefix = locale === "vi" ? "/vi" : "";
@@ -178,7 +195,7 @@ try {
 
   const noJsContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 430, height: 932 } });
   const noJs = await noJsContext.newPage();
-  for (const path of ["/", "/vi", "/operations/secure-api-gateway", "/vi/operations/secure-api-gateway", "/log", "/vi/log", `/log/${logSlug}`, `/vi/log/${logSlug}`]) {
+  for (const path of ["/", "/vi", "/projects", "/vi/about", "/terminal", "/vi/contact", "/writeups", "/operations/secure-api-gateway", "/vi/operations/secure-api-gateway", "/log", "/vi/log", `/log/${logSlug}`, `/vi/log/${logSlug}`]) {
     const response = await noJs.goto(`${base}${path}`);
     assert.equal(response.status(), 200, `${path}: no-JavaScript response`);
     assert.equal(await noJs.locator("main").isVisible(), true, `${path}: no-JavaScript content`);

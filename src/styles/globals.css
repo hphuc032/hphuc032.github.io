@@ -11,6 +11,7 @@
 @import "./security-log.css";
 @import "./terminal.css";
 @import "./contact.css";
+@import "./multipage.css";
 @import "./creative-interaction.css";
 
 @layer base {

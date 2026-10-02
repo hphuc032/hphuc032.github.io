@@ -1,4 +1,5 @@
 import type { Locale } from "./locales";
+import { isPublishedDedicatedPath } from "@/data/page-publication";
 import { isPublishedCase } from "@/data/project-publication";
 import { isPublishedLog } from "@/data/security-log-publication";
 
@@ -32,6 +33,7 @@ export function publicPath(path: string) {
 export function localizedPath(path: string, locale: Locale): string | undefined {
   const canonical = publicPath(path);
   const logRoute = canonical === "/log" || (canonical.startsWith("/log/") && isPublishedLog(canonical.slice("/log/".length), locale));
-  if (canonical !== "/" && canonical !== "/dev/design-system" && !logRoute && !(canonical.startsWith("/operations/") && isPublishedCase(canonical.slice("/operations/".length), locale))) return undefined;
+  const dedicatedRoute = isPublishedDedicatedPath(canonical, locale);
+  if (canonical !== "/" && canonical !== "/dev/design-system" && !dedicatedRoute && !logRoute && !(canonical.startsWith("/operations/") && isPublishedCase(canonical.slice("/operations/".length), locale))) return undefined;
   return locale === "en" ? canonical : `/vi${canonical === "/" ? "" : canonical}`;
 }

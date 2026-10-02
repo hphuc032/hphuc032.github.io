@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { securityLogSlug } from "./test-fixtures.mjs";
+import { dedicatedPageSegments, securityLogSlug } from "./test-fixtures.mjs";
 
 const base = process.argv[2] ?? "http://127.0.0.1:3000";
 const production = process.argv.includes("--production");
@@ -32,10 +32,24 @@ assert.equal(new URL(englishAlias.headers.get("location"), base).pathname, "/");
 assert.equal(new URL(englishAlias.headers.get("location"), base).search, "?source=foundation");
 console.log("PASS /en: canonical redirect preserves query");
 
-for (const path of ["/fr", "/vi/missing", "/missing", "/operations/not-published", "/vi/operations/not-published", "/log/not-published", "/vi/log/not-published", "/picture/CA1A3276.JPG", "/CV/CV%20IT%20Resume.pdf"]) {
+for (const path of ["/fr", "/vi/missing", "/missing", "/projects/not-real", "/writeups/not-real", "/about/not-real", "/operations/not-published", "/vi/operations/not-published", "/log/not-published", "/vi/log/not-published", "/picture/CA1A3276.JPG", "/CV/CV%20IT%20Resume.pdf"]) {
   const { response } = await request(path);
   assert.equal(response.status, 404, `${path} must be unavailable`);
   console.log(`PASS ${path}: 404`);
+}
+
+for (const locale of ["en", "vi"]) {
+  const prefix = locale === "vi" ? "/vi" : "";
+  for (const segment of dedicatedPageSegments) {
+    const path = `${prefix}/${segment}`;
+    const { response, html } = await request(path);
+    assert.equal(response.status, 200, path);
+    assert.ok(html.includes(`<html lang="${locale}"`), `${path} document language`);
+    assert.ok(html.includes(`data-page="${segment}"`), `${path} typed page identity`);
+    assert.ok(html.includes('id="main-content"'), `${path} skip-link target`);
+    assert.ok(!html.includes('class="network-object"'), `${path} excludes homepage Network Sphere`);
+    console.log(`PASS ${path}: dedicated page SSR without homepage WebGL`);
+  }
 }
 
 const publicCv = await fetch(`${base}/cv/nguyen-hoang-phuc-cv.pdf`, { signal: AbortSignal.timeout(30000) });

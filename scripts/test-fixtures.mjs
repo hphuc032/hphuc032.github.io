@@ -17,10 +17,12 @@ export const operationSlugs = [
   "network-traffic-analysis",
 ];
 export const securityLogSlug = "analyzing-http-and-https-traffic-with-wireshark";
+export const dedicatedPageSegments = ["projects", "writeups", "about", "terminal", "contact"];
 
 export const publishedRoutes = [
   "/",
   "/vi",
+  ...dedicatedPageSegments.flatMap(segment => [`/${segment}`, `/vi/${segment}`]),
   ...operationSlugs.flatMap(slug => [`/operations/${slug}`, `/vi/operations/${slug}`]),
   "/log",
   "/vi/log",

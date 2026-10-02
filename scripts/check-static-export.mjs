@@ -4,7 +4,7 @@ import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { gzipSync } from "node:zlib";
-import { publishedRoutes } from "./test-fixtures.mjs";
+import { dedicatedPageSegments, publishedRoutes } from "./test-fixtures.mjs";
 
 const outputDirectory = join(process.cwd(), "out");
 const siteUrl = "https://hphuc032.github.io";
@@ -49,6 +49,18 @@ const home = homeRecord.html;
 assert.ok(home.includes("/images/identity/nguyen-hoang-phuc.webp"), "portrait must resolve from the site root");
 assert.ok(home.includes("/cv/nguyen-hoang-phuc-cv.pdf"), "CV must resolve from the site root");
 assert.ok(home.includes("/_next/"), "Next.js assets must resolve from the site root");
+
+for (const segment of dedicatedPageSegments) {
+  const record = htmlFiles.find(item => item.file === `${segment}/index.html`);
+  assert.ok(record, `${segment}: exported HTML missing`);
+  assert.equal(/class="network-object"|class="pointer-atmosphere"/.test(record.html), false, `${segment}: homepage-only visual mounted`);
+  const scripts = [...record.html.matchAll(/<script[^>]+src="([^"]+)"/g)]
+    .map(match => match[1])
+    .filter(source => source.startsWith("/_next/"));
+  const routeJavaScript = (await Promise.all(scripts.map(source => readFile(join(outputDirectory, source.slice(1)), "utf8")))).join("\n");
+  assert.equal(/THREE\.WebGLRenderer|NetworkSphere|pointer-atmosphere|wake-canvas/.test(routeJavaScript), false, `${segment}: homepage-only WebGL/wake code shipped`);
+}
+console.log(`PASS ${dedicatedPageSegments.length} dedicated routes exclude homepage Network Sphere and pointer-wake bundles`);
 
 const sitemap = await readFile(join(outputDirectory, "sitemap.xml"), "utf8");
 assert.equal((sitemap.match(/<url>/g) ?? []).length, routes.length, "sitemap route count");

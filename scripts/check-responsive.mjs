@@ -215,6 +215,11 @@ try {
     { name: "terminal-touch-768", route: "/vi", selector: "#terminal", width: 768, height: 1024, touch: true },
     { name: "contact-mobile-375", route: "/vi", selector: "#contact", width: 375, height: 812, touch: true },
     { name: "article-mobile-430", route: "/vi/log/analyzing-http-and-https-traffic-with-wireshark", selector: ".log-article", width: 430, height: 932, touch: true },
+    { name: "r1-projects-1440", route: "/projects", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
+    { name: "r1-writeups-1440", route: "/writeups", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
+    { name: "r1-about-1440", route: "/about", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
+    { name: "r1-terminal-1440", route: "/terminal", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
+    { name: "r1-contact-1440", route: "/contact", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
   ];
   for (const capture of captures) {
     const context = await browser.newContext({ viewport: { width: capture.width, height: capture.height }, hasTouch: capture.touch, isMobile: capture.width < 768, reducedMotion: "reduce" });

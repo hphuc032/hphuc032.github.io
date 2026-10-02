@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/i18n/locales";
+import { dedicatedPagePath, dedicatedPagePublication } from "@/data/page-publication";
 import { publishedCase, projects } from "@/data/projects";
 import { casePath } from "@/data/project-publication";
 import { logArticlePath, logIndexPath, securityLogPublication } from "@/data/security-log-publication";
@@ -16,6 +17,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
   const homePaths = { en: "/", vi: "/vi" };
   const homeRoutes = locales.map(locale => localizedEntry(homePaths, locale));
+  const dedicatedRoutes = dedicatedPagePublication.flatMap(page => {
+    const paths = {
+      en: dedicatedPagePath(page.id, "en")!,
+      vi: dedicatedPagePath(page.id, "vi")!,
+    };
+    return locales.filter(locale => (page.locales as readonly string[]).includes(locale)).map(locale => localizedEntry(paths, locale));
+  });
   const projectRoutes = projects.flatMap(project => {
     const paths = { en: casePath(project.slug, "en"), vi: casePath(project.slug, "vi") };
     return locales.filter(locale => publishedCase(project.slug, locale)).map(locale => localizedEntry(paths, locale));
@@ -28,5 +36,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       return locales.filter(locale => (entry.locales as readonly string[]).includes(locale)).map(locale => localizedEntry(paths, locale));
     }),
   ];
-  return [...homeRoutes, ...projectRoutes, ...logRoutes];
+  return [...homeRoutes, ...dedicatedRoutes, ...projectRoutes, ...logRoutes];
 }
