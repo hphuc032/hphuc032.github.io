@@ -1,23 +1,23 @@
-import { Operations } from "@/components/home/Operations";
+import { ProjectsIndex } from "@/components/projects/ProjectsIndex";
 import { DedicatedPageFrame } from "@/components/pages/DedicatedPageFrame";
 import type { Locale } from "@/i18n/locales";
+import "@/styles/projects.css";
 
 const copy = {
   en: {
-    eyebrow: "ROUTE / PROJECTS",
+    eyebrow: "SELECTED OPERATIONS",
     title: "Projects",
-    description: "Published security work drawn from the same evidence-conscious project catalog used across carwyn.sec.",
+    description: "Three projects exploring API security, assessment labs, and network traffic analysis.",
   },
   vi: {
-    eyebrow: "TUYẾN / DỰ ÁN",
+    eyebrow: "DỰ ÁN TIÊU BIỂU",
     title: "Dự án",
-    description: "Các dự án bảo mật đã công bố, dùng chung danh mục chú trọng bằng chứng trên toàn bộ carwyn.sec.",
+    description: "Ba dự án từ thực hành bảo mật API, đánh giá lỗ hổng đến phân tích lưu lượng mạng.",
   },
 } as const;
 
 export function ProjectsPage({ locale }: { locale: Locale }) {
   return <DedicatedPageFrame locale={locale} page="projects" {...copy[locale]}>
-    <Operations locale={locale} />
+    <ProjectsIndex locale={locale} />
   </DedicatedPageFrame>;
 }
-

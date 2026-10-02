@@ -38,6 +38,11 @@ export interface Project {
   overview?: Localized<string>;
   sections?: readonly CaseStudySection[];
   visualConcept?: "access" | "assessment" | "protocol";
+  /** Index-only presentation; Home and case-study prose remain independent. */
+  indexPresentation?: {
+    content: Localized<{ label: string; description: string }>;
+    tools: readonly string[];
+  };
 }
 
 export interface Experience {
