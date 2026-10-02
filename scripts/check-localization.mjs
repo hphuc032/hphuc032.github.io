@@ -149,7 +149,7 @@ try {
         await switchStaticLocale(targetLocale, expectedPath);
       } else {
         await Promise.all([
-          page.waitForURL(`**/${targetLocale === "vi" ? `vi/operations/${slug}` : `operations/${slug}`}`),
+          page.waitForURL(url => url.pathname.replace(/\/$/, "") === expectedPath),
           page.locator(`.site-header .language-selector a[lang="${targetLocale}"]`).click(),
         ]);
       }

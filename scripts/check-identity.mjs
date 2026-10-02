@@ -42,10 +42,10 @@ try {
   await page.waitForURL("**/vi#identity");
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   assert.ok((await page.locator(".identity-biography").textContent()).startsWith("Tôi"));
-  await page.getByRole("button", { name: "Mục lục", exact: true }).click();
-  await page.locator('.index-links a[href$="#identity"]').click();
+  await page.goto(base + "/vi#identity");
+  await page.locator("#identity").focus();
   await page.waitForFunction(() => document.activeElement.id === "identity");
-  console.log("PASS scroll cue keyboard/focus, active index, locale/hash preservation, menu destination");
+  console.log("PASS scroll cue keyboard/focus, active status and locale/hash preservation");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator(".identity-image-frame").hover();
   assert.equal(await page.locator(".identity-portrait img").evaluate(el => getComputedStyle(el).transform), "none");

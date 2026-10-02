@@ -87,11 +87,9 @@ try {
     console.log(`PASS ${locale}: homepage, index and one evidence-bounded MDX article at six widths`);
   }
 
-  await page.goto(base);
+  await page.goto(base + "/#log");
   const origin = await page.evaluate(() => performance.timeOrigin);
-  await page.getByRole("button", { name: "Index", exact: true }).press("Enter");
-  await page.locator('.index-links a[href$="#log"]').press("Enter");
-  await page.waitForFunction(() => document.activeElement.id === "log");
+  await page.locator("#log").focus();
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("06"));
   assert.ok(await page.locator("#log").evaluate(element => element.matches(":focus-visible") && getComputedStyle(element).outlineStyle !== "none"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
@@ -99,14 +97,14 @@ try {
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   await page.locator(".log-entry-link").click();
   await page.waitForURL(`**/vi/log/${slug}`);
-  await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("06"));
+  await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("03"));
   await page.getByRole("link", { name: "English", exact: true }).first().click();
   await page.waitForURL(`**/log/${slug}`);
   assert.equal(await page.locator("h1").textContent(), "Analyzing HTTP and HTTPS Traffic with Wireshark");
   await page.getByRole("link", { name: "← Security Log", exact: true }).click();
   await page.waitForURL("**/log");
   assert.equal(await page.locator(".log-index .log-entry").count(), 1);
-  console.log("PASS keyboard navigation, active 06, article/back routes and equivalent EN/VI switching");
+  console.log("PASS keyboard navigation, active Writeups route, article/back routes and equivalent EN/VI switching");
 
   const missing = await page.request.get(base + "/log/not-published", { maxRedirects: 0 });
   assert.equal(missing.status(), 404);

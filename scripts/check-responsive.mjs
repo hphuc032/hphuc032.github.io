@@ -127,14 +127,14 @@ try {
     console.log(`PASS ${viewport.label}: ${routes.length} published routes`);
   }
 
-  // Height-constrained homepages: the index must expose all destinations and the closing content must clear fixed chrome.
-  for (const dimensions of [{ width: 375, height: 667 }, { width: 430, height: 740 }, { width: 1440, height: 800 }]) {
+  // Height-constrained homepages: the mobile menu must expose all destinations and the closing content must clear fixed chrome.
+  for (const dimensions of [{ width: 375, height: 667 }, { width: 430, height: 740 }, { width: 768, height: 700 }]) {
     const touch = dimensions.width < 768;
     const context = await browser.newContext({ viewport: dimensions, hasTouch: touch, isMobile: touch, reducedMotion: "reduce" });
     const page = await context.newPage();
     watch(page, `constrained:${dimensions.width}x${dimensions.height}`);
     await page.goto(base);
-    const menu = page.getByRole("button", { name: "Index", exact: true });
+    const menu = page.getByRole("button", { name: "Menu", exact: true });
     await menu.click();
     const dialog = page.locator("dialog");
     const last = dialog.locator(".index-links a").last();
@@ -147,6 +147,14 @@ try {
     await context.close();
   }
   console.log("PASS constrained-height navigation and ending clearance");
+
+  const desktopNavigationContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  const desktopNavigationPage = await desktopNavigationContext.newPage();
+  await desktopNavigationPage.goto(base);
+  assert.equal(await desktopNavigationPage.locator(".desktop-navigation a").count(), 5, "desktop exposes five route destinations");
+  assert.ok((await inspect(desktopNavigationPage)).overflow <= 1, "desktop navigation does not overflow");
+  await desktopNavigationContext.close();
+  console.log("PASS desktop route navigation composition");
 
   // Resize/orientation and text-size stress: client boundaries must recompute without stale overflow.
   const resizeContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
