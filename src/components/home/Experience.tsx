@@ -19,7 +19,7 @@ export function Experience({ locale }: { locale: Locale }) {
   const records = publishedExperience(locale);
   return <section id="experience" className="experience" aria-labelledby="experience-title" tabIndex={-1}>
     <div className="experience-inner">
-      <div className="experience-topline"><SectionLabel number="05">{vi ? "Kinh nghiệm" : "Experience"}</SectionLabel><span>{vi ? "02 công việc" : "02 work records"}</span></div>
+      <div className="experience-topline"><SectionLabel number="03">{vi ? "Kinh nghiệm" : "Experience"}</SectionLabel><span>{String(records.length).padStart(2, "0")} {vi ? "công việc" : "work records"}</span></div>
       <div className="experience-intro"><h2 id="experience-title">{vi ? "Công việc, trong thực tế." : "Work, in context."}</h2><p>{vi ? "Kiểm thử phần mềm và công việc thủ công trực tiếp." : "Software testing and hands-on craft."}</p></div>
       <ol className="experience-list">
         {records.map(({ record, content }) => {

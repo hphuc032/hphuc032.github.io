@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/locales";
 // Evidence classification and withheld fields: docs/experience-evidence-audit.md.
 export const experience: readonly Experience[] = [
   {
-    id: "uat-web-mobile", order: 1, kind: "technical", state: "published",
+    id: "uat-web-mobile", order: 1, organization: "Era Group", kind: "technical", state: "published",
     dates: { start: { value: "2026-08", precision: "month" }, end: "present" },
     content: {
       en: { state: "published", value: {
