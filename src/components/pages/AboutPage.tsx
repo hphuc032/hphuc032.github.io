@@ -6,6 +6,7 @@ import { DedicatedPageFrame } from "@/components/pages/DedicatedPageFrame";
 import { TextLink } from "@/components/ui/TextLink";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { publicCv } from "@/data/contact";
+import { profile } from "@/data/profile";
 import type { Locale } from "@/i18n/locales";
 import "@/styles/about.css";
 
@@ -15,7 +16,7 @@ const copy = {
     title: "About",
     description: "Security practice, software testing, and the person behind carwyn.sec.",
     cvTitle: "The profile, on paper.",
-    cvDescription: "Nguyen Hoang Phuc / Curriculum vitae / PDF",
+    cvDescription: "Curriculum vitae / PDF",
     cvAction: "VIEW CV",
     newTab: "opens in a new tab",
   },
@@ -24,7 +25,7 @@ const copy = {
     title: "Giới thiệu",
     description: "Thực hành bảo mật, kiểm thử phần mềm và con người phía sau carwyn.sec.",
     cvTitle: "Hồ sơ, trên trang giấy.",
-    cvDescription: "Nguyen Hoang Phuc / Hồ sơ nghề nghiệp / PDF",
+    cvDescription: "Hồ sơ nghề nghiệp / PDF",
     cvAction: "XEM CV",
     newTab: "mở trong thẻ mới",
   },
@@ -41,7 +42,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <div>
         <SectionLabel number="05">CV</SectionLabel>
         <h2 id="about-cv-title">{content.cvTitle}</h2>
-        <p>{content.cvDescription}</p>
+        <p><span lang="en">{profile.name}</span> / {content.cvDescription}</p>
       </div>
       <TextLink href={publicCv.url} variant="editorial" arrow="external" newTab newTabLabel={content.newTab}>{content.cvAction}</TextLink>
     </section>
