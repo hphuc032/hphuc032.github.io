@@ -42,11 +42,12 @@ export function GlobalInterface({ locale }: { locale: Locale }) {
 
   return <>
     <header className="site-header">
-      <DeploymentLink className="site-brand" href={siteNavigationPath("home", locale)} aria-label={copy.home} aria-current={routeActive === "home" ? "page" : undefined}>carwyn.sec</DeploymentLink>
+      <DeploymentLink className="site-brand" href={siteNavigationPath("home", locale)} prefetch={false} aria-label={copy.home} aria-current={routeActive === "home" ? "page" : undefined}>carwyn.sec</DeploymentLink>
       <nav className="desktop-navigation" aria-label={copy.navigation}>
         {siteNavigationIds.filter(id => id !== "home").map(id => <DeploymentLink
           key={id}
           href={siteNavigationPath(id, locale)}
+          prefetch={false}
           aria-current={routeActive === id ? "page" : undefined}
         >{copy.navigationLabels[id]}</DeploymentLink>)}
       </nav>
@@ -69,6 +70,7 @@ export function GlobalInterface({ locale }: { locale: Locale }) {
       </div>
       <nav aria-label={copy.navigation} className="index-links">
         {siteNavigationIds.map((id, index) => <DeploymentLink
+          prefetch={false}
           key={id}
           href={siteNavigationPath(id, locale)}
           aria-current={routeActive === id ? "page" : undefined}

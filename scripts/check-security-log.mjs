@@ -26,7 +26,8 @@ function pathFor(locale, suffix = "") { return `${locale === "vi" ? "/vi" : ""}$
 async function layoutMetrics(locator) {
   return locator.evaluate(root => ({
     overflow: document.documentElement.scrollWidth > innerWidth,
-    clipped: [...root.querySelectorAll("h1,h2,h3,p,span,strong,dd,dt")].some(element => element.scrollWidth > element.clientWidth + 1),
+    // Screen-reader-only heading/link context intentionally uses a 1px box.
+    clipped: [...root.querySelectorAll("h1,h2,h3,p,span,strong,dd,dt")].filter(element => !element.closest(".sr-only")).some(element => element.scrollWidth > element.clientWidth + 1),
     hidden: [...root.querySelectorAll("h1,h2,h3,.log-entry-copy,.log-entry-action")].some(element => getComputedStyle(element).display === "none" || getComputedStyle(element).visibility === "hidden" || getComputedStyle(element).opacity === "0"),
     height: Math.round(root.getBoundingClientRect().height),
   }));
@@ -55,10 +56,10 @@ async function measureRoute(path) {
 try {
   await mkdir("test-results/security-log", { recursive: true });
   for (const locale of ["en", "vi"]) {
-    const homePath = pathFor(locale, "/") + "#log";
+    const homePath = pathFor(locale, "/") + "#latest-writing";
     const indexPath = pathFor(locale, "/log");
     const articlePath = pathFor(locale, `/log/${slug}`);
-    for (const [kind, path, selector] of [["home", homePath, "#log"], ["index", indexPath, ".log-index"], ["article", articlePath, ".log-article"]]) {
+    for (const [kind, path, selector] of [["home", homePath, "#latest-writing"], ["index", indexPath, ".log-index"], ["article", articlePath, ".log-article"]]) {
       await page.goto(base + path);
       for (const width of widths) {
         await page.setViewportSize({ width, height: 1000 });
@@ -70,7 +71,7 @@ try {
         assert.equal(metrics.hidden, false, `${locale}/${kind}/${width}: hidden content`);
         results.push({ locale, kind, width, ...metrics });
       }
-      assert.equal(await page.locator(`${selector} .log-entry`).count(), kind === "article" ? 0 : 1);
+      assert.equal(await page.locator(`${selector} ${kind === "home" ? ".home-note" : ".log-entry"}`).count(), kind === "article" ? 0 : 1);
     }
     await page.goto(base + articlePath);
     assert.equal(await page.locator(".log-prose h2").count(), 5);
@@ -87,19 +88,20 @@ try {
     console.log(`PASS ${locale}: homepage, index and one evidence-bounded MDX article at six widths`);
   }
 
-  await page.goto(base + "/#log");
+  await page.goto(base + "/#latest-writing");
   const origin = await page.evaluate(() => performance.timeOrigin);
-  await page.locator("#log").focus();
-  await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("06"));
-  assert.ok(await page.locator("#log").evaluate(element => element.matches(":focus-visible") && getComputedStyle(element).outlineStyle !== "none"));
+  await page.locator("#latest-writing").focus();
+  await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("04"));
+  assert.ok(await page.locator("#latest-writing").evaluate(element => element.matches(":focus-visible") && getComputedStyle(element).outlineStyle !== "none"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
-  await page.waitForURL("**/vi#log");
+  await page.waitForURL("**/vi#latest-writing");
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
-  await page.locator(".log-entry-link").click();
+  await page.locator(".home-note h3 a").click();
   await page.waitForURL(`**/vi/log/${slug}`);
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("03"));
   await page.getByRole("link", { name: "English", exact: true }).first().click();
   await page.waitForURL(`**/log/${slug}`);
+  await page.getByRole("heading", { level: 1, name: "Analyzing HTTP and HTTPS Traffic with Wireshark", exact: true }).waitFor();
   assert.equal(await page.locator("h1").textContent(), "Analyzing HTTP and HTTPS Traffic with Wireshark");
   await page.getByRole("link", { name: "← Security Log", exact: true }).click();
   await page.waitForURL("**/log");
@@ -109,18 +111,18 @@ try {
   const missing = await page.request.get(base + "/log/not-published", { maxRedirects: 0 });
   assert.equal(missing.status(), 404);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(base + "/#log");
+  await page.goto(base + "/log");
   assert.ok(await page.locator(".log-entry-action").evaluate(element => parseFloat(getComputedStyle(element).transitionDuration) <= .001));
-  assert.equal(await page.locator("#log .log-entry").count(), 1);
+  assert.equal(await page.locator(".log-index .log-entry").count(), 1);
   await page.emulateMedia({ reducedMotion: "no-preference" });
 
-  await page.goto(base + "/#log");
+  await page.goto(base + "/#latest-writing");
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.locator("#log").scrollIntoViewIfNeeded();
+  await page.locator("#latest-writing").scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
-  await page.locator("#log").screenshot({ path: "test-results/security-log/home-desktop-1440.png", style: captureStyle });
-  await page.evaluate(() => scrollTo(0, document.getElementById("log").offsetTop - 510));
-  await page.screenshot({ path: "test-results/security-log/achievements-to-log.png" });
+  await page.locator("#latest-writing").screenshot({ path: "test-results/security-log/home-desktop-1440.png", style: captureStyle });
+  await page.evaluate(() => scrollTo(0, document.getElementById("latest-writing").offsetTop - 510));
+  await page.screenshot({ path: "test-results/security-log/projects-to-writing.png" });
   await page.goto(base + "/log");
   await page.locator(".log-index").screenshot({ path: "test-results/security-log/index-desktop-1440.png", style: captureStyle });
   await page.goto(base + `/log/${slug}`);
@@ -129,9 +131,9 @@ try {
   const touch = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 430, height: 932 } });
   const mobile = await touch.newPage();
   mobile.on("pageerror", error => errors.push(error.message));
-  await mobile.goto(base + "/#log");
+  await mobile.goto(base + "/#latest-writing");
   await mobile.waitForTimeout(800);
-  await mobile.locator("#log").screenshot({ path: "test-results/security-log/home-mobile-430.png", style: captureStyle });
+  await mobile.locator("#latest-writing").screenshot({ path: "test-results/security-log/home-mobile-430.png", style: captureStyle });
   await mobile.goto(base + `/log/${slug}`);
   await mobile.locator(".log-article").screenshot({ path: "test-results/security-log/article-mobile-430.png", style: captureStyle });
   await touch.close();

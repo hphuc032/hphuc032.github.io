@@ -64,26 +64,29 @@ try {
       }));
       assert.equal(metrics.pageOverflow, false, `${locale}/${width}: horizontal overflow`);
       assert.equal(metrics.lang, locale, `${locale}/${width}: document language`);
-      assert.ok(metrics.headings >= 9, `${locale}/${width}: semantic headings`);
-      assert.equal(metrics.visibleSections, 9, `${locale}/${width}: all homepage sections visible`);
+      assert.ok(metrics.headings === 5, `${locale}/${width}: semantic headings`);
+      assert.equal(metrics.visibleSections, 5, `${locale}/${width}: all homepage sections visible`);
       measurements.push({ locale, width, ...metrics });
     }
 
     const homeText = await page.locator("main").textContent();
     assert.equal(await page.locator("#hero-title").getAttribute("aria-label"), "UNDERSTAND SYSTEMS. DEFEND THEM.");
     assert.ok(homeText.includes("LET'SCONNECT."));
-    assert.ok(homeText.includes("AWS Student Builder Group HCMUTE"));
-    assert.ok(homeText.includes("HCMUTE CTF 2025"));
-    assert.ok(homeText.includes(locale === "vi" ? "THAM DỰ VÒNG SƠ KHẢO" : "QUALIFYING ROUND PARTICIPANT"));
-    assert.ok(homeText.includes(locale === "vi" ? "Đang học" : "In progress"));
-    assert.equal(forbiddenClaims.test(homeText), false, `${locale}: unsupported achievement claim`);
+    assert.equal(await page.locator(".home-project").count(), 3);
+    assert.equal(await page.locator("[data-sphere-skills] li").count(), 13);
+    await assertMetadata(locale, "carwyn.sec — Cyber Security Portfolio", locale === "vi" ? "Portfolio An toàn thông tin" : "personal Information Security portfolio");
+    await page.goto(`${base}${prefix}/about`);
+    const aboutText = await page.locator("main").textContent();
+    assert.ok(aboutText.includes("AWS Student Builder Group HCMUTE"));
+    assert.ok(aboutText.includes("HCMUTE CTF 2025"));
+    assert.ok(aboutText.includes(locale === "vi" ? "THAM DỰ VÒNG SƠ KHẢO" : "QUALIFYING ROUND PARTICIPANT"));
+    assert.ok(aboutText.includes(locale === "vi" ? "Đang học" : "In progress"));
+    assert.equal(forbiddenClaims.test(aboutText), false, `${locale}: unsupported achievement claim`);
     assert.equal(await page.locator("#achievements .achievement-group").count(), 4);
-    assert.equal(await page.locator("#operations .operation-row").count(), 3);
     assert.equal(await page.locator("#identity img").getAttribute("alt"), locale === "vi"
       ? "Chân dung Nguyen Hoang Phuc ngồi trong không gian tự nhiên."
       : "Portrait of Nguyen Hoang Phuc seated in a natural setting.");
     assert.equal(await page.locator(".skip-link").textContent(), locale === "vi" ? "Chuyển đến nội dung" : "Skip to content");
-    await assertMetadata(locale, "carwyn.sec — Cyber Security Portfolio", locale === "vi" ? "Portfolio An toàn thông tin" : "personal Information Security portfolio");
     console.log(`PASS ${locale}: homepage content, claims, accessibility text, metadata and six widths`);
   }
 
@@ -116,7 +119,7 @@ try {
     assert.equal(new URL(page.url()).pathname, "/");
     assert.equal(new URL(page.url()).hash, `#${section}`);
   }
-  console.log("PASS all eight meaningful homepage hashes survive EN/VI switching without replaying initialization");
+  console.log("PASS all five meaningful homepage hashes survive EN/VI switching without replaying initialization");
 
   for (const segment of dedicatedPageSegments) {
     await page.goto(`${base}/${segment}`);
@@ -174,7 +177,7 @@ try {
 
   for (const locale of ["en", "vi"]) {
     const prefix = locale === "vi" ? "/vi" : "";
-    await page.goto(`${base}${prefix}/#terminal`);
+    await page.goto(`${base}${prefix}/terminal`);
     const input = page.locator("#terminal-command");
     await input.fill("help");
     await input.press("Enter");
@@ -189,7 +192,7 @@ try {
   console.log("PASS shared Terminal commands with localized UI and whoami output");
 
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(`${base}/vi#contact`);
+  await page.goto(`${base}/vi/contact#contact`);
   assert.ok(await page.locator("#contact a").first().evaluate(link => parseFloat(getComputedStyle(link).transitionDuration) <= .001));
   await page.emulateMedia({ reducedMotion: "no-preference" });
 
@@ -205,8 +208,8 @@ try {
 
   for (const [locale, width, path] of [["en", 1440, "/"], ["vi", 1440, "/vi"], ["en", 430, "/"], ["vi", 430, "/vi"]]) {
     await page.setViewportSize({ width, height: width === 430 ? 932 : 1000 });
-    await page.goto(`${base}${path}#identity`);
-    await page.locator("#identity").scrollIntoViewIfNeeded();
+    await page.goto(`${base}${path}#about`);
+    await page.locator("#about").scrollIntoViewIfNeeded();
     await page.screenshot({ path: `test-results/localization/${locale}-${width}.png`, fullPage: false });
   }
 

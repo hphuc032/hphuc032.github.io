@@ -14,7 +14,7 @@ export function LanguageSelector({ locale, onNavigate }: { locale: Locale; onNav
     {(["en", "vi"] as const).map((language) => {
       const href = localizedPath(pathname, language);
       if (!href) return <span key={language} aria-disabled="true" title={copy.translationUnavailable}>{language.toUpperCase()}</span>;
-      return <DeploymentLink key={language} href={href} hrefLang={language} lang={language}
+      return <DeploymentLink key={language} href={href} hrefLang={language} lang={language} prefetch={false}
         aria-label={language === "en" ? "English" : "Tiếng Việt"}
         aria-current={language === locale ? "page" : undefined}
         onClick={(event) => {
