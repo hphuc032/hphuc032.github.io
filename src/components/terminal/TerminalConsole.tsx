@@ -1,24 +1,11 @@
 "use client";
 
 import { DeploymentLink } from "@/components/ui/DeploymentLink";
-import { FormEvent, KeyboardEvent, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { terminalCommands, type TerminalCommand, type TerminalContent, type TerminalResponse } from "./types";
-import { publicRoutePath } from "@/lib/deployment-path";
 
 const MAX_HISTORY = 50;
 type HistoryRecord = { id: number; command: string; response: TerminalResponse };
-
-function navigateHash(event: MouseEvent<HTMLAnchorElement>, href: string) {
-  const targetUrl = new URL(publicRoutePath(href), window.location.href);
-  if (targetUrl.origin !== window.location.origin || targetUrl.pathname !== window.location.pathname || !targetUrl.hash) return;
-  const destination = document.getElementById(decodeURIComponent(targetUrl.hash.slice(1)));
-  if (!destination) return;
-  event.preventDefault();
-  window.history.pushState(null, "", targetUrl.hash);
-  destination.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
-  if (!destination.hasAttribute("tabindex")) destination.setAttribute("tabindex", "-1");
-  destination.focus({ preventScroll: true });
-}
 
 function Response({ response }: { response: TerminalResponse }) {
   return <div className="terminal-response">
@@ -28,7 +15,7 @@ function Response({ response }: { response: TerminalResponse }) {
       {entry.href ? <DeploymentLink href={entry.href} prefetch={false}>{entry.label}<span aria-hidden="true"> ↗</span></DeploymentLink> : <strong>{entry.label}</strong>}
       {entry.detail && <span>{entry.detail}</span>}
     </li>)}</ul>}
-    {response.action && <DeploymentLink className="terminal-action" href={response.action.href!} prefetch={false} onClick={event => navigateHash(event, response.action!.href!)}>{response.action.label}<span aria-hidden="true"> →</span></DeploymentLink>}
+    {response.action && <DeploymentLink className="terminal-action" href={response.action.href!} prefetch={false}>{response.action.label}<span aria-hidden="true"> →</span></DeploymentLink>}
   </div>;
 }
 
@@ -37,7 +24,8 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyCursor, setHistoryCursor] = useState(0);
-  const [announcement, setAnnouncement] = useState("");
+  const [announcement, setAnnouncement] = useState({ text: "", revision: 0 });
+  const draft = useRef("");
   const nextId = useRef(0);
   const output = useRef<HTMLDivElement>(null);
 
@@ -52,15 +40,21 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
     if (region) region.scrollTop = region.scrollHeight;
   }, [history]);
 
+  function announce(text: string) {
+    setAnnouncement(previous => ({ text, revision: previous.revision + 1 }));
+  }
+
   function clear() {
     setHistory([]);
     setCommandHistory([]);
     setHistoryCursor(0);
-    setAnnouncement(content.clearedAnnouncement);
+    draft.current = "";
+    setValue("");
+    announce(content.clearedAnnouncement);
   }
 
   function execute(raw: string) {
-    const commandText = raw.trim().slice(0, 64);
+    const commandText = raw.slice(0, 64).trim();
     if (!commandText) return;
     const normalized = commandText.toLocaleLowerCase("en-US");
     if (normalized === "clear") {
@@ -79,7 +73,8 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
     setHistory(records => [...records, { id: nextId.current++, command: commandText, response }].slice(-MAX_HISTORY));
     setCommandHistory(commands => [...commands, commandText].slice(-MAX_HISTORY));
     setHistoryCursor(Math.min(commandHistory.length + 1, MAX_HISTORY));
-    setAnnouncement(response.announcement);
+    draft.current = "";
+    announce(response.announcement);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -89,6 +84,7 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.nativeEvent.isComposing) return;
     if (event.ctrlKey && !event.altKey && !event.metaKey && event.key.toLocaleLowerCase() === "l") {
       event.preventDefault();
       clear();
@@ -98,19 +94,21 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
     event.preventDefault();
     if (!commandHistory.length) return;
     if (event.key === "ArrowUp") {
+      if (historyCursor === commandHistory.length) draft.current = value;
       const next = Math.max(0, historyCursor - 1);
       setHistoryCursor(next);
       setValue(commandHistory[next] ?? "");
       return;
     }
+    if (historyCursor === commandHistory.length) return;
     const next = Math.min(commandHistory.length, historyCursor + 1);
     setHistoryCursor(next);
-    setValue(next === commandHistory.length ? "" : (commandHistory[next] ?? ""));
+    setValue(next === commandHistory.length ? draft.current : (commandHistory[next] ?? ""));
   }
 
   return <div className="terminal-console" data-native-cursor>
     <div className="terminal-console-bar"><span>{content.consoleLabel}</span><span>{content.ready}</span></div>
-    <div ref={output} className="terminal-output" tabIndex={0} aria-label={content.outputLabel}>
+    <div ref={output} className="terminal-output" role="log" aria-live="off" tabIndex={0} aria-label={content.outputLabel}>
       <div className="terminal-welcome"><p>{content.ready}</p><p>{content.instruction}</p></div>
       <ol>{history.map(record => <li key={record.id}>
         <p className="terminal-command"><span>{content.prompt}</span> {record.command}</p>
@@ -120,9 +118,11 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
     <form className="terminal-form" onSubmit={submit}>
       <label className="sr-only" htmlFor="terminal-command">{content.inputLabel}</label>
       <span aria-hidden="true">{content.prompt}</span>
-      <input id="terminal-command" name="command" value={value} onChange={event => setValue(event.target.value)} onKeyDown={handleKeyDown}
-        autoComplete="off" autoCapitalize="none" enterKeyHint="send" maxLength={64} spellCheck={false} />
+      <input id="terminal-command" name="command" value={value} onChange={event => setValue(event.target.value.slice(0, 64))} onKeyDown={handleKeyDown}
+        aria-describedby="terminal-keyboard-hint" autoComplete="off" autoCapitalize="none" enterKeyHint="send" maxLength={64} spellCheck={false} />
+      <button type="submit">{content.submitLabel}<span aria-hidden="true"> ↵</span></button>
     </form>
-    <p className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</p>
+    <p id="terminal-keyboard-hint" className="terminal-keyboard-hint">{content.keyboardHint}</p>
+    <p className="sr-only" aria-live="polite" aria-atomic="true"><span key={announcement.revision}>{announcement.text}</span></p>
   </div>;
 }
