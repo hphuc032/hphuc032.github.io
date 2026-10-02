@@ -4,14 +4,14 @@ import type { Locale } from "@/i18n/locales";
 
 const copy = {
   en: {
-    eyebrow: "ROUTE / TERMINAL",
+    eyebrow: "INTERFACE / LOCAL CONSOLE",
     title: "Terminal",
-    description: "A safe, predefined interaction layer for navigating the published portfolio record.",
+    description: "Explore the published portfolio through nine predefined commands. Responses stay local; navigation is always your choice.",
   },
   vi: {
-    eyebrow: "TUYẾN / TERMINAL",
+    eyebrow: "GIAO DIỆN / BẢNG LỆNH CỤC BỘ",
     title: "Terminal",
-    description: "Lớp tương tác an toàn, định sẵn để điều hướng các nội dung portfolio đã công bố.",
+    description: "Khám phá portfolio qua chín lệnh định sẵn. Kết quả được xử lý cục bộ; bạn chủ động chọn liên kết để điều hướng.",
   },
 } as const;
 
