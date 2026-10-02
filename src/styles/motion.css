@@ -1,0 +1,10 @@
+/* Final content is the default. Only a mounted enhancement adds these states. */
+@media (prefers-reduced-motion: no-preference) {
+  main[data-page-motion="enter"] { animation: page-arrive var(--duration-route) var(--ease-editorial); }
+  main[data-page-motion="exit"] { animation: page-depart var(--duration-fast) var(--ease-standard); }
+  main[data-page-motion="enter"] h1 { animation: title-arrive var(--duration-reveal) var(--ease-editorial); }
+}
+@keyframes page-arrive { from { opacity: .94; } to { opacity: 1; } }
+@keyframes page-depart { 50% { opacity: .94; } }
+@keyframes title-arrive { from { transform: translateY(var(--reveal-distance)); } to { transform: none; } }
+@media (max-width: 63.99rem) { :root { --reveal-distance: 4px; } }

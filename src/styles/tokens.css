@@ -36,6 +36,9 @@
   --reading-width: 44rem;
   --duration-fast: 160ms;
   --duration-interface: 240ms;
+  --duration-route: 320ms;
+  --duration-reveal: 450ms;
+  --reveal-distance: 8px;
   --duration-medium: 350ms;
   --duration-slow: 700ms;
   --duration-stagger: 75ms;
