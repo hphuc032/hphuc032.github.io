@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, rm, symlink, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, posix, resolve, win32 } from 'node:path';
 import { test } from 'node:test';
-import { contentRoot, inspectMarkdown, limits, normalizeMarkdown, safeLocal, sourcePath, validateManifest, verifyImage, writeChanged } from './lib/writeup-pipeline.mjs';
+import { contentRoot, inspectMarkdown, limits, normalizeMarkdown, relativeWithin, safeLocal, sourcePath, validateManifest, verifyImage, writeChanged } from './lib/writeup-pipeline.mjs';
 import { writeupPublication } from '../src/data/writeup-publication.ts';
 const entry = structuredClone(writeupPublication[1]);
 
@@ -41,7 +41,34 @@ test('assets require image signatures and bounds, not merely a safe extension', 
   assert.throws(() => verifyImage(Buffer.alloc(limits.image + 1), 'a.png'));
   verifyImage(Buffer.from([137,80,78,71,13,10,26,10]), 'a.png');
 });
-test('local writes are dry-run safe, idempotent and reject symlink destinations', async () => {
+for (const [platform, pathApi, base, outside] of [
+  ['Linux', posix, '/portfolio/src/content/writeups', '/outside/source.md'],
+  ['Windows drive', win32, 'C:\\portfolio\\src\\content\\writeups', 'D:\\outside\\source.md'],
+  ['Windows UNC', win32, '\\\\server\\share\\portfolio\\writeups', '\\\\other\\share\\source.md'],
+]) {
+  test(`${platform} containment accepts descendants and rejects escapes`, () => {
+    assert.equal(relativeWithin(base, base, pathApi), '');
+    assert.equal(relativeWithin(base, pathApi.join(base, 'article', 'source.md'), pathApi), pathApi.join('article', 'source.md'));
+    assert.equal(relativeWithin(base, pathApi.join(base, '..notes', 'source.md'), pathApi), pathApi.join('..notes', 'source.md'));
+    assert.throws(() => relativeWithin(base, pathApi.join(base, '..', 'source.md'), pathApi));
+    assert.throws(() => relativeWithin(base, `${base}-sibling`, pathApi));
+    assert.throws(() => relativeWithin(base, outside, pathApi));
+    assert.throws(() => relativeWithin(base, pathApi.join(pathApi.dirname(base), 'outside', 'source.md'), pathApi));
+    if (pathApi === win32) {
+      assert.equal(relativeWithin(base, pathApi.join(base, 'article', 'source.md').replaceAll('\\', '/'), pathApi), pathApi.join('article', 'source.md'));
+    }
+  });
+}
+
+test('native safeLocal accepts missing descendants and rejects escapes', async () => {
+  assert.equal(await safeLocal(contentRoot), resolve(contentRoot));
+  const file = join(contentRoot, 'missing-directory', 'nested', 'source.md');
+  assert.equal(await safeLocal(file), resolve(file));
+  await assert.rejects(safeLocal(join(contentRoot, '..', 'outside.md')));
+  await assert.rejects(safeLocal(`${contentRoot}-sibling`));
+});
+
+test('local writes are dry-run safe, idempotent and reject symlink/junction destinations', async () => {
   await mkdir(contentRoot, { recursive: true });
   const directory = await mkdtemp(join(contentRoot, '.pipeline-test-'));
   const file = join(directory, 'source.md');
@@ -50,10 +77,11 @@ test('local writes are dry-run safe, idempotent and reject symlink destinations'
     assert.equal(await writeChanged(file, Buffer.from('content'), false), 'would-create');
     assert.equal(await writeChanged(file, Buffer.from('content'), false), 'unchanged');
     const target = join(directory, 'outside'); await mkdir(target);
-    await symlink(target, join(directory, 'link'));
+    await symlink(target, join(directory, 'link'), process.platform === 'win32' ? 'junction' : 'dir');
+    await assert.rejects(safeLocal(join(directory, 'link')));
     await assert.rejects(safeLocal(join(directory, 'link', 'x.md')));
-    await rm(join(directory, 'link'));
+    await rm(join(directory, 'link'), { recursive: true, force: true });
     await writeFile(join(directory, 'regular'), 'file');
-    await assert.rejects(safeLocal('/tmp/outside.md'));
+    await assert.rejects(safeLocal(join(contentRoot, '..', 'outside.md')));
   } finally { await rm(directory, { recursive: true, force: true }); }
 });

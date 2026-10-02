@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { dirname, extname, join, posix, resolve } from 'node:path';
+import { dirname, extname, isAbsolute, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeupPublication } from '../../src/data/writeup-publication.ts';
 
@@ -152,13 +152,22 @@ export function metadata(entry, text, raw, findings, assets) {
   };
 }
 
-// Do not follow symlinks in controlled destination paths, including parent dirs.
+// Injectable path semantics let the same containment rule be tested for both OSes.
+export function relativeWithin(base, target, pathApi = { relative, resolve, sep, isAbsolute }) {
+  const descendant = pathApi.relative(pathApi.resolve(base), pathApi.resolve(target));
+  if (descendant === '..' || descendant.startsWith(`..${pathApi.sep}`) || pathApi.isAbsolute(descendant)) {
+    throw new Error('Destination escapes content root');
+  }
+  return descendant;
+}
+
+// Do not follow symlinks/junctions in controlled destinations, including parent dirs.
 export async function safeLocal(path) {
   const absolute = resolve(path);
-  if (!absolute.startsWith(`${contentRoot}/`) && absolute !== contentRoot) throw new Error('Destination escapes content root');
-  const relative = absolute.slice(root.length);
+  relativeWithin(contentRoot, absolute);
+  const descendant = relativeWithin(root, absolute);
   let cursor = root;
-  for (const part of relative.split('/').filter(Boolean)) {
+  for (const part of descendant.split(sep).filter(Boolean)) {
     cursor = join(cursor, part);
     try {
       const info = await lstat(cursor);
@@ -175,7 +184,7 @@ export async function writeChanged(path, bytes, dryRun) {
   await safeLocal(path);
   const old = await readOptional(path);
   const status = !old ? 'would-create' : old.equals(bytes) ? 'unchanged' : 'would-update';
-  if (status !== 'unchanged') console.log(`${status} ${posix.relative(root, path)} ${old ? sha256(old) : 'missing'} -> ${sha256(bytes)}`);
+  if (status !== 'unchanged') console.log(`${status} ${relative(root, path).split(sep).join('/')} ${old ? sha256(old) : 'missing'} -> ${sha256(bytes)}`);
   if (!dryRun && status !== 'unchanged') { await mkdir(dirname(path), { recursive: true }); await writeFile(path, bytes); }
   return status;
 }
