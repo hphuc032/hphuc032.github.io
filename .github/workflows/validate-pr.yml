@@ -55,7 +55,7 @@ jobs:
             cat "$RUNNER_TEMP/carwyn-next.log"
             exit 1
           fi
-          npm run check:routes
+          npm run check:routes -- http://127.0.0.1:3000 --production
 
   github-pages:
     name: GitHub Pages static export
