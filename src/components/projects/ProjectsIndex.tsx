@@ -10,7 +10,7 @@ export function ProjectsIndex({ locale }: { locale: Locale }) {
   const vi = locale === "vi";
   const copy = {
     selection: vi ? "Danh sách dự án" : "Project selection",
-    case: vi ? "XEM BÀI DỰ ÁN" : "VIEW CASE",
+    case: vi ? "XEM CASE STUDY" : "VIEW CASE",
     tools: vi ? "Công cụ và công nghệ" : "Tools and technologies",
     beyond: vi ? "Tiếp tục khám phá" : "Beyond this selection",
     github: vi ? "KHÁM PHÁ GITHUB" : "EXPLORE GITHUB",

@@ -53,7 +53,7 @@ export const projects: readonly Project[] = [
     indexPresentation: {
       content: {
         en: { state: "published", value: { label: "NETWORK SECURITY / ANALYSIS", description: "Packet and protocol analysis with Wireshark. Comparing plaintext HTTP visibility with encrypted HTTPS traffic." } },
-        vi: { state: "published", value: { label: "AN TOÀN MẠNG / PHÂN TÍCH", description: "Phân tích gói tin và giao thức bằng Wireshark. Đối chiếu nội dung HTTP dạng rõ với lưu lượng HTTPS được mã hóa." } },
+        vi: { state: "published", value: { label: "AN NINH MẠNG / PHÂN TÍCH", description: "Phân tích gói tin và giao thức bằng Wireshark. Đối chiếu nội dung HTTP dạng rõ với lưu lượng HTTPS được mã hóa." } },
       },
       tools: ["Wireshark", "TCP/IP", "DNS", "HTTP / HTTPS"],
     },

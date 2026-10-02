@@ -39,14 +39,20 @@ async function expectRows(locale) {
     assert.deepEqual(await row.locator('.projects-index-tools li').allTextContents(), tools[i]);
     const accessibleName = await link.evaluate(el => el.getAttribute('aria-labelledby').split(' ').map(id => document.getElementById(id).textContent).join(' '));
     assert.ok(accessibleName.includes(titles[i]));
-    assert.ok(accessibleName.includes(locale === 'vi' ? 'XEM BÀI DỰ ÁN' : 'VIEW CASE'));
+    assert.ok(accessibleName.includes(locale === 'vi' ? 'XEM CASE STUDY' : 'VIEW CASE'));
     assert.equal(await row.locator('.projects-index-preview').getAttribute('aria-hidden'), 'true');
     assert.ok(await row.locator('.projects-index-description').isVisible());
   }
   const text = await page.locator('main').innerText();
+  assert.equal(await rows.nth(2).locator('.projects-index-category').textContent(), locale === 'vi' ? 'AN NINH MẠNG / PHÂN TÍCH' : 'NETWORK SECURITY / ANALYSIS');
   assert.equal(/\b(?:expert|mastery|industry-leading|enterprise-grade|production-proven|detected threats|critical vulnerabilities|fully protected)\b|\d+%|\b(?:RPS|uptime|latency)\b/i.test(text), false);
   assert.ok(text.includes(locale === 'vi' ? 'HTTPS được mã hóa' : 'encrypted HTTPS'));
-  assert.equal(await page.locator('.network-object, canvas, #operations').count(), 0);
+  assert.equal(await page.locator('.network-object, canvas:not(.global-atmosphere), #operations').count(), 0, 'Projects excludes homepage WebGL and Operations');
+  const atmosphere = page.locator('canvas.global-atmosphere');
+  assert.equal(await atmosphere.count(), 1, 'exactly one shared R3 atmosphere');
+  assert.equal(await atmosphere.getAttribute('data-intensity'), 'medium');
+  assert.equal(await atmosphere.getAttribute('aria-hidden'), 'true');
+  assert.equal(await atmosphere.evaluate(el => getComputedStyle(el).pointerEvents), 'none');
 }
 
 try {
