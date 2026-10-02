@@ -68,9 +68,9 @@ try {
   await page.waitForFunction(() => !document.querySelector(".initialization").hasAttribute("data-play"));
   assert.equal(await page.evaluate(() => window.__introPlays), 1);
   const origin = await page.evaluate(() => performance.timeOrigin);
-  await page.evaluate(() => history.replaceState(null, "", "?review=global#identity"));
+  await page.evaluate(() => history.replaceState(null, "", "?review=global#about"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
-  await page.waitForURL(url => url.pathname.replace(/\/$/, "") === "/vi" && url.search === "?review=global" && url.hash === "#identity");
+  await page.waitForURL(url => url.pathname.replace(/\/$/, "") === "/vi" && url.search === "?review=global" && url.hash === "#about");
   await page.waitForFunction(() => document.documentElement.lang === "vi");
   if (!staticExport) {
     assert.equal(await page.evaluate(() => performance.timeOrigin), origin, "locale switch must not reload in normal mode");
@@ -145,7 +145,7 @@ try {
   console.log("PASS equivalent EN/VI route switching");
 
   await page.goto(base);
-  await page.locator("#operations").scrollIntoViewIfNeeded();
+  await page.locator("#featured-projects").scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector(".status-section")?.textContent?.includes("03"));
   assert.equal(await page.locator(".site-brand").getAttribute("aria-current"), "page");
   await page.goto(base + "/operations/secure-api-gateway");

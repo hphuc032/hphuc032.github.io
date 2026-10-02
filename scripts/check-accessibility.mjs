@@ -196,12 +196,11 @@ try {
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(base + "/");
-  const operationName = await page.locator(".operation-link").first().ariaSnapshot();
-  assert.match(operationName, /View case study/);
-  assert.match(operationName, /API Security/);
+  const operationName = await page.locator(".home-project a").first().ariaSnapshot();
+  assert.match(operationName, /Secure API Gateway/);
   assert.match(operationName, /authentication and authorization/);
   assert.equal(await page.locator('.language-selector').first().getByRole("link", { name: "English", exact: true }).getAttribute("aria-current"), "page");
-  await page.locator("#operations").scrollIntoViewIfNeeded();
+  await page.locator("#featured-projects").scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector(".status-section")?.textContent?.includes("03"));
   assert.equal(await page.locator(".site-brand").getAttribute("aria-current"), "page");
   await page.goto(base + "/operations/secure-api-gateway");
@@ -223,7 +222,7 @@ try {
   }
   console.log(`PASS visible focus while tabbing the homepage (${focusCount} focusable controls)`);
 
-  await page.goto(base + "/#terminal");
+  await page.goto(base + "/terminal");
   const input = page.locator("#terminal-command");
   await input.focus();
   await input.fill("help");
@@ -238,7 +237,7 @@ try {
   assert.ok(!(await page.evaluate(() => document.activeElement?.id === "terminal-command")), "terminal has no focus trap");
   console.log("PASS Terminal label, concise announcements, clear state, focus retention and exit");
 
-  await page.goto(base + "/#contact");
+  await page.goto(base + "/#connect");
   const back = page.getByRole("link", { name: /Back to top/i });
   await back.scrollIntoViewIfNeeded();
   await back.focus();
@@ -267,7 +266,7 @@ try {
   assert.equal(await reducedPage.locator(".liquid-light").first().evaluate(element => `${element.width}x${element.height}`), "1x1");
   assert.equal(await reducedPage.locator(".network-object").getAttribute("data-network-mode"), "static");
   assert.equal(await reducedPage.locator(".context-cursor").evaluate(element => getComputedStyle(element).display), "none");
-  assert.ok(await reducedPage.locator("#contact h2").isVisible());
+  assert.ok(await reducedPage.locator("#connect h2").isVisible());
   await reducedPage.close();
   console.log("PASS reduced-motion final states, static sphere, inert wake and cursor");
 

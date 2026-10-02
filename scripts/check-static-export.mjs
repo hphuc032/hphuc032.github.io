@@ -46,8 +46,8 @@ for (const { file, html } of htmlFiles) {
 const homeRecord = htmlFiles.find(item => item.file === "index.html");
 assert.ok(homeRecord, "home export must exist");
 const home = homeRecord.html;
-assert.ok(home.includes("/images/identity/nguyen-hoang-phuc.webp"), "portrait must resolve from the site root");
-assert.ok(home.includes("/cv/nguyen-hoang-phuc-cv.pdf"), "CV must resolve from the site root");
+assert.ok(htmlFiles.find(item => item.file === "about/index.html").html.includes("/images/identity/nguyen-hoang-phuc.webp"), "portrait must resolve from the site root");
+assert.ok(htmlFiles.find(item => item.file === "contact/index.html").html.includes("/cv/nguyen-hoang-phuc-cv.pdf"), "CV must resolve from the site root");
 assert.ok(home.includes("/_next/"), "Next.js assets must resolve from the site root");
 
 for (const segment of dedicatedPageSegments) {

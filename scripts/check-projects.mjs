@@ -147,9 +147,9 @@ try {
   for (const locale of ['en','vi']) {
     const prefix = locale === 'vi' ? '/vi' : '';
     await page.goto(`${base}${prefix}/`); await page.waitForLoadState('networkidle');
-    assert.equal(await page.locator('main > section').count(), 9);
+    assert.equal(await page.locator('main > section').count(), 5);
     for (const id of homepageHashSections) assert.equal(await page.locator(`#${id}`).count(),1);
-    assert.equal(await page.locator('#operations .operation-row').count(),3);
+    assert.equal(await page.locator('.home-project').count(),3);
     for (const slug of operationSlugs) {
       const response=await page.goto(`${base}${prefix}/operations/${slug}`); assert.equal(response.status(),200);
       assert.equal(await page.locator('.case-study h1').count(),1);

@@ -4,14 +4,15 @@ import { isPublishedCase } from "@/data/project-publication";
 import { isPublishedLog } from "@/data/security-log-publication";
 // Generated from publishedWriteups() at build time. Never bundle review metadata.
 import writeupPublicRoutes from "@/data/writeup-public-routes.json";
+import { homeChapters, homeLabels } from "@/data/home";
 
-export const sectionIds = ["identity", "expertise", "operations", "experience", "achievements", "log", "contact"] as const;
+export const sectionIds = homeChapters;
 export type SectionId = (typeof sectionIds)[number];
 
 export const globalUI = {
   en: {
     menu: "Menu", close: "Close", navigation: "Primary navigation", language: "Language",
-    sectionLabels: ["Identity", "Expertise", "Operations", "Experience", "Achievements", "Log", "Contact"],
+    sectionLabels: homeLabels.en.chapters,
     navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
     translationUnavailable: "Translation not yet published",
     online: "SYSTEM ONLINE", compactOnline: "ONLINE", location: "VIETNAM / UTC+7", system: "SYSTEM",
@@ -19,7 +20,7 @@ export const globalUI = {
   },
   vi: {
     menu: "Menu", close: "Đóng", navigation: "Điều hướng chính", language: "Ngôn ngữ",
-    sectionLabels: ["Giới thiệu", "Chuyên môn", "Dự án", "Kinh nghiệm", "Thành tựu", "Security Log", "Liên hệ"],
+    sectionLabels: homeLabels.vi.chapters,
     navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
     translationUnavailable: "Bản dịch chưa được công bố",
     online: "HỆ THỐNG TRỰC TUYẾN", compactOnline: "TRỰC TUYẾN", location: "VIỆT NAM / UTC+7", system: "HỆ THỐNG",

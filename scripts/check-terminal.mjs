@@ -38,7 +38,7 @@ try {
   await mkdir("test-results/terminal", { recursive: true });
   for (const locale of ["en", "vi"]) {
     const prefix = locale === "vi" ? "/vi" : "";
-    await page.goto(`${base}${prefix}/#terminal`);
+    await page.goto(`${base}${prefix}/terminal`);
     assert.notEqual(await page.evaluate(() => document.activeElement?.id), "terminal-command", `${locale}: no autofocus`);
     for (const width of widths) {
       await page.setViewportSize({ width, height: 1000 });
@@ -58,7 +58,7 @@ try {
     console.log(`PASS ${locale}: responsive Terminal at six widths, no autofocus or overflow`);
   }
 
-  await page.goto(`${base}/#terminal`);
+  await page.goto(`${base}/terminal`);
   await run("help");
   assert.equal(await page.locator(".terminal-response li").count(), 9);
   await run("whoami");
@@ -111,8 +111,8 @@ try {
   await run("clear");
   await run("projects");
   await page.locator(".terminal-output ol > li").last().locator(".terminal-action").click();
-  await page.waitForURL("**/#operations");
-  await page.goto(`${base}/#terminal`);
+  await page.waitForURL(url => url.pathname.replace(/\/$/, "") === "/projects");
+  await page.goto(`${base}/terminal`);
   await run("logs");
   const logsAction = page.locator(".terminal-output ol > li").last().locator(".terminal-action");
   if (staticExport) {
@@ -121,21 +121,21 @@ try {
   } else {
     await Promise.all([page.waitForURL("**/log"), logsAction.click()]);
   }
-  await page.goto(`${base}/#terminal`);
+  await page.goto(`${base}/terminal`);
   const vietnameseLink = page.locator(".site-header").getByRole("link", { name: "Tiếng Việt", exact: true });
   if (staticExport) {
     await vietnameseLink.click();
-    assert.equal(new URL(page.url()).pathname.replace(/\/$/, ""), "/vi");
-    assert.equal(new URL(page.url()).hash, "#terminal");
+    assert.equal(new URL(page.url()).pathname.replace(/\/$/, ""), "/vi/terminal");
+    assert.equal(new URL(page.url()).hash, "");
   } else {
-    await Promise.all([page.waitForURL("**/vi#terminal"), vietnameseLink.click()]);
+    await Promise.all([page.waitForURL("**/vi/terminal"), vietnameseLink.click()]);
   }
   await run("contact");
   assert.ok((await page.locator(".terminal-output ol > li").last().textContent()).includes("Các kênh liên hệ công khai"));
   console.log("PASS locale-preserving hash/routes and localized command output");
 
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`${base}/#terminal`);
+  await page.goto(`${base}/terminal`);
   await page.mouse.move(100, 100);
   await page.locator("#terminal-command").hover();
   assert.equal(await page.locator(".context-cursor").getAttribute("data-visible"), "false");
@@ -148,7 +148,7 @@ try {
   const mobileContext = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 430, height: 932 } });
   const mobile = await mobileContext.newPage();
   mobile.on("pageerror", error => errors.push(error.message));
-  await mobile.goto(`${base}/#terminal`);
+  await mobile.goto(`${base}/terminal`);
   await mobile.locator("#terminal-command").tap();
   await mobile.locator("#terminal-command").fill("help");
   await mobile.locator("#terminal-command").press("Enter");
@@ -158,7 +158,7 @@ try {
 
   const noJsContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 430, height: 932 } });
   const noJs = await noJsContext.newPage();
-  await noJs.goto(`${base}/#terminal`);
+  await noJs.goto(`${base}/terminal`);
   assert.equal(await noJs.locator(".terminal-noscript").isVisible(), true);
   assert.equal(await noJs.locator(".terminal-console").isVisible(), false);
   assert.equal(await noJs.locator(".terminal-noscript li").count(), 9);
@@ -166,7 +166,7 @@ try {
   await noJsContext.close();
   console.log("PASS native cursor, reduced motion, touch and no-JavaScript fallback");
 
-  await page.goto(`${base}/#terminal`);
+  await page.goto(`${base}/terminal`);
   await run("clear");
   await run("whoami"); await run("projects");
   await page.setViewportSize({ width: 1440, height: 1100 });
@@ -174,7 +174,7 @@ try {
   await page.evaluate(() => scrollTo(0, document.getElementById("terminal").offsetTop - 520));
   await page.screenshot({ path: "test-results/terminal/log-to-terminal.png" });
   await page.setViewportSize({ width: 430, height: 932 });
-  await page.goto(`${base}/#terminal`);
+  await page.goto(`${base}/terminal`);
   await run("clear");
   await run("whoami");
   await page.locator("#terminal").screenshot({ path: "test-results/terminal/mobile-430.png", style: captureStyle });

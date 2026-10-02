@@ -32,6 +32,8 @@ async function inspect(page) {
   return page.evaluate(() => {
     const root = document.documentElement;
     const visible = element => {
+      // Intentional assistive text is clipped to 1px, not visible layout content.
+      if (element.closest(".sr-only")) return false;
       const style = getComputedStyle(element);
       const box = element.getBoundingClientRect();
       return style.display !== "none" && style.visibility !== "hidden" && box.width > 0 && box.height > 0;
@@ -191,7 +193,8 @@ try {
   const touchPage = await touchContext.newPage();
   await touchPage.goto(base);
   assert.ok((await touchPage.locator(".liquid-light").evaluateAll(items => items.every(canvas => canvas.width === 1 && canvas.height === 1))), "touch canvas remains inert");
-  assert.equal(await touchPage.locator(".operation-preview").first().evaluate(element => getComputedStyle(element).display), "none");
+  assert.equal(await touchPage.locator(".operation-preview").count(), 0, "Home teaser has no hover-only preview");
+  await touchPage.goto(base + "/terminal");
   await touchPage.locator("#terminal input").scrollIntoViewIfNeeded();
   await touchPage.locator("#terminal input").tap();
   assert.ok(await touchPage.locator("#terminal input").evaluate(element => element === document.activeElement));
@@ -202,14 +205,14 @@ try {
   // Server-rendered content remains readable when enhancement JavaScript is unavailable.
   for (const dimensions of [{ width: 375, height: 812 }, { width: 1024, height: 768 }]) {
     const context = await browser.newContext({ viewport: dimensions, javaScriptEnabled: false, reducedMotion: "reduce" });
-    for (const route of ["/", "/vi", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"]) {
+    for (const route of ["/", "/vi", "/terminal", "/vi/terminal", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"]) {
       const page = await context.newPage();
       await page.goto(base + route, { waitUntil: "domcontentloaded" });
       const measurement = await inspect(page);
       assert.ok(measurement.overflow <= 1, `no-JS ${dimensions.width} ${route}`);
       assert.deepEqual(measurement.clippedText, [], `no-JS clipped text ${dimensions.width} ${route}`);
       assert.ok((await page.locator("main").innerText()).trim().length > 200, `no-JS readable content ${route}`);
-      if (route === "/" || route === "/vi") assert.ok(await page.locator(".terminal-noscript").isVisible(), `no-JS Terminal instructions ${route}`);
+      if (route === "/terminal" || route === "/vi/terminal") assert.ok(await page.locator(".terminal-noscript").isVisible(), `no-JS Terminal instructions ${route}`);
       await page.close();
     }
     await context.close();
@@ -218,10 +221,10 @@ try {
 
   // Focused visual evidence for the corrected breakpoint boundaries.
   const captures = [
-    { name: "identity-mobile-430", route: "/", selector: "#identity", width: 430, height: 932, touch: true },
-    { name: "operations-touch-1024", route: "/", selector: "#operations", width: 1024, height: 768, touch: true },
-    { name: "terminal-touch-768", route: "/vi", selector: "#terminal", width: 768, height: 1024, touch: true },
-    { name: "contact-mobile-375", route: "/vi", selector: "#contact", width: 375, height: 812, touch: true },
+    { name: "identity-mobile-430", route: "/about", selector: "#identity", width: 430, height: 932, touch: true },
+    { name: "projects-touch-1024", route: "/", selector: "#featured-projects", width: 1024, height: 768, touch: true },
+    { name: "terminal-touch-768", route: "/vi/terminal", selector: "#terminal", width: 768, height: 1024, touch: true },
+    { name: "contact-mobile-375", route: "/vi/contact", selector: "#contact", width: 375, height: 812, touch: true },
     { name: "article-mobile-430", route: "/vi/log/analyzing-http-and-https-traffic-with-wireshark", selector: ".log-article", width: 430, height: 932, touch: true },
     { name: "r1-projects-1440", route: "/projects", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
     { name: "r1-writeups-1440", route: "/writeups", selector: ".dedicated-page", width: 1440, height: 1000, touch: false },
