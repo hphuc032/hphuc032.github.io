@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
+import type { ComponentType } from "react";
 import { notFound } from "next/navigation";
-import { AboutPage } from "@/components/pages/AboutPage";
-import { ContactPage } from "@/components/pages/ContactPage";
-import { ProjectsPage } from "@/components/pages/ProjectsPage";
-import { TerminalPage } from "@/components/pages/TerminalPage";
-import { WriteupsPage } from "@/components/pages/WriteupsPage";
 import { dedicatedPagePath, type DedicatedPageId } from "@/data/page-publication";
 import type { Locale } from "@/i18n/locales";
 import { localizedMetadata } from "@/lib/site-metadata";
@@ -32,22 +28,15 @@ const metadataCopy = {
   },
 } as const satisfies Record<DedicatedPageId, Record<Locale, { title: string; description: string }>>;
 
-const pages = {
-  projects: ProjectsPage,
-  writeups: WriteupsPage,
-  about: AboutPage,
-  terminal: TerminalPage,
-  contact: ContactPage,
-} as const satisfies Record<DedicatedPageId, typeof ProjectsPage>;
-
 export function dedicatedPageMetadata(page: DedicatedPageId, locale: Locale): Metadata {
   const paths = { en: dedicatedPagePath(page, "en"), vi: dedicatedPagePath(page, "vi") };
   if (!paths.en || !paths.vi) notFound();
   return localizedMetadata({ locale, ...metadataCopy[page][locale], paths: { en: paths.en, vi: paths.vi } });
 }
 
-export function DedicatedPageRoute({ page, locale }: { page: DedicatedPageId; locale: Locale }) {
-  const Page = pages[page];
+// Each route supplies its server composition, keeping unrelated client/CSS
+// dependencies out of the route graph. Metadata and publication stay shared.
+export function DedicatedPageRoute({ page, locale, component: Page }: { page: DedicatedPageId; locale: Locale; component: ComponentType<{ locale: Locale }> }) {
   if (!dedicatedPagePath(page, locale)) notFound();
   return <Page locale={locale} />;
 }

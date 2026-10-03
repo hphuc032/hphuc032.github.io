@@ -26,6 +26,7 @@ export function GlobalAtmosphere() {
     const contrast = matchMedia("(forced-colors: active)");
     let intensity = atmosphereIntensity(window.location.pathname);
     let frame = 0;
+    let scrollFrame = 0;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let lastDraw = 0;
     let width = 1, height = 1, scroll = window.scrollY;
@@ -37,6 +38,7 @@ export function GlobalAtmosphere() {
 
     const stop = () => {
       cancelAnimationFrame(frame); frame = 0;
+      cancelAnimationFrame(scrollFrame); scrollFrame = 0;
       clearTimeout(timer); timer = undefined;
       element.dataset.running = "false";
     };
@@ -99,10 +101,15 @@ export function GlobalAtmosphere() {
       measure(); reconcile(false);
     };
     const onScroll = () => {
-      const previouslyCovered = covered;
-      scroll = window.scrollY; checkCoverage();
-      if (previouslyCovered !== covered) reconcile();
-      else if (visible()) paint(performance.now());
+      // Multiple scroll events before a paint need only the final viewport mask.
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        const previouslyCovered = covered;
+        scroll = window.scrollY; checkCoverage();
+        if (previouslyCovered !== covered) reconcile();
+        else if (visible()) paint(performance.now());
+      });
     };
     const route = (path: string) => {
       intensity = atmosphereIntensity(path);
