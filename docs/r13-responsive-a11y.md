@@ -11,6 +11,56 @@ changes are included. R12 was not merged at baseline. Final integration status i
 recorded in the PR/final delivery; if R12 subsequently merges, rebase and rerun the
 full responsive, accessibility and localization suites before merging R13.
 
+## Post-R12 integration refresh — 2026-10-03
+
+The original R13 commit `4896ebb1add898cdc40557c85e2569e943491527` was rebased
+without conflicts onto `a62e9fcb2466b09cee84368c92198e2d6f029f73`, the integration
+merge of R12. Its rebased implementation commit is `12075cb`; no application or
+test change was needed during rebase. R12 wording, route/fragment policy, canonical
+backlinks and standalone 404 favicon are retained alongside the R13 reflow and
+accessibility fixes.
+
+The repeat review uses Windows Microsoft Edge/Chromium `154.0.4258.48`, external
+Playwright `1.62.1` and Node `24.14.0`. Browser suites use their existing Edge
+channel with live WebGL available; no fallback runtime or console-warning filter
+was applied. Raw repeat logs remain ignored in `test-results/r13-rebase/`.
+
+Normal-mode results after rebase:
+
+| Check | Result |
+| --- | --- |
+| Lint / type-check / normal production build | PASS |
+| Responsive | PASS; 308 route/viewport measurements, 200% text, no-JS and constrained menus |
+| Accessibility | PASS; all 22 routes, 496 keyboard controls, code/table fixtures, reduced motion and 404 |
+| Localization | PASS; all 22 public routes, EN/VI switching, Back/Forward, metadata policy, hashes, publication gates and no-JS |
+| Home | PASS, exit 0; live Sphere rendering, rotation, focus/drag, hidden/offscreen lifecycle, mobile, fallback and clean console |
+| Hero | PASS, exit 0; live network pixels, resize, pause/idle, context loss, reduced motion and clean console |
+| Normal production route checker | PASS |
+
+Fresh-load Hero CLS was `0` in this laboratory run. The scripted lifecycle/resize
+accumulator was approximately `0.000323`; it is not a field performance metric.
+The previously reported Linux cloud-driver `GPU stall due to ReadPixels` warnings
+were not reproduced on this host. The earlier failures below are historical, not
+the current repeat result. No failing assertion was waived or suppressed.
+
+GitHub Pages repeat results:
+
+| Check | Result |
+| --- | --- |
+| Static production build / export checker | PASS; 22 public routes, correct origin-root assets, real 404 and dedicated WebGL isolation |
+| Responsive | PASS; all 308 measurements plus no-JS and menu/reflow checks |
+| Accessibility | PASS; all 22 routes, 496 keyboard controls, fixture and recovery checks |
+| Localization | PASS; published route pairs, legacy/current hashes, Back/Forward, source-language boundaries and clean console |
+| Metadata / Writeups export | PASS; 22-route sitemap and no review-content leak |
+
+The public and exported CV SHA-256 remains
+`f1fa8676c5fc2f0e6d676529fe97100eaaa133021b589e80c7e940bdde1f77c9`.
+No browser suite assertion or application code was changed for this repeat.
+Target-GPU, Firefox/Safari, native screen-reader and real-device coverage remain
+R14/R15 follow-ups; there is no current Home/Hero functional failure to defer.
+Existing non-fatal Node module-type and normal-build Writeups tracing warnings
+remain. No R14/R15 implementation, production merge or deployment was performed.
+
 ## Findings and remediation
 
 - At 320px with 200% text, Home project rows exceeded the page width because
@@ -111,7 +161,7 @@ Escape and focus return on Home EN/VI, Terminal, Contact and the article. Locali
 Text contrast sampling runs on all public routes against composited solid CSS
 backgrounds; it does not certify image/gradient backgrounds or every dynamic state.
 
-## Commands and exact final results
+## Original Linux results — before R12 integration
 
 Commands below were actually executed against production builds (normal at
 `http://127.0.0.1:3100`, exported Pages at `http://127.0.0.1:4183`). Browser commands
@@ -215,7 +265,7 @@ native Windows high contrast and assistive-technology zoom were not tested.
 Forced-colors results refer only to Chromium emulation; 200% results refer to
 actual CSS text scaling, not a native browser zoom certification.
 
-This cloud Chromium driver emits `GPU stall due to ReadPixels` during live WebGL.
+The original cloud Chromium driver emitted `GPU stall due to ReadPixels` during live WebGL.
 Live Home/Hero suites keep their console assertions and their final exit status
 must be read from the results table. A static-fallback PASS does not certify live
 WebGL. Repeat live rendering and lifecycle suites on the intended deployment
