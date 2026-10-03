@@ -14,7 +14,7 @@
   font-size: var(--text-body-lg);
 }
 
-.dedicated-page > section:first-of-type { scroll-margin-top: var(--header-height); }
+.dedicated-page > section:first-of-type { scroll-margin-top: var(--space-1); }
 .dedicated-page[data-page="projects"] .operations,
 .dedicated-page[data-page="terminal"] .terminal-section,
 .dedicated-page[data-page="contact"] .contact { padding-top: var(--section-space); }

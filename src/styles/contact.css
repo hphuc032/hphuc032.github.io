@@ -40,8 +40,9 @@
 .end-system { background: #060909; color: var(--text-primary); border-top: 1px solid #293231; padding-block: clamp(4rem, 7vw, 7rem) calc(var(--status-height) + var(--space-12)); }
 .end-system-topline { padding-bottom: var(--space-16); border-bottom: 1px solid #293231; }
 .end-system-topline .status-indicator { color: var(--text-muted); }
+.end-system-topline .status-indicator > :last-child { min-width: 0; overflow-wrap: anywhere; }
 .end-system-closing { display: flex; justify-content: space-between; align-items: end; gap: var(--space-8); padding-block: var(--space-16) var(--space-12); }
-.end-system-closing p { font-size: clamp(2.5rem, 7vw, 7rem); font-weight: 600; line-height: 1; letter-spacing: -.06em; }
+.end-system-closing p { max-width: 100%; overflow-wrap: anywhere; font-size: clamp(2.5rem, 7vw, 7rem); font-weight: 600; line-height: 1; letter-spacing: -.06em; }
 .end-system-closing a { min-height: 2.75rem; padding-block: var(--space-3); color: var(--text-primary); font: 500 var(--text-metadata)/1.5 var(--font-technical), monospace; letter-spacing: .05em; text-transform: uppercase; text-decoration: underline; text-decoration-color: var(--border-active); text-underline-offset: .35em; }
 .end-system-copyright { color: var(--text-subtle); }
 @media (max-width: 63.99rem) {

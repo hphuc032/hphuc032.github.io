@@ -119,7 +119,7 @@ export function TerminalConsole({ content }: { content: TerminalContent }) {
       <label className="sr-only" htmlFor="terminal-command">{content.inputLabel}</label>
       <span aria-hidden="true">{content.prompt}</span>
       <input id="terminal-command" name="command" value={value} onChange={event => setValue(event.target.value.slice(0, 64))} onKeyDown={handleKeyDown}
-        aria-describedby="terminal-keyboard-hint" autoComplete="off" autoCapitalize="none" enterKeyHint="send" maxLength={64} spellCheck={false} />
+        aria-describedby="terminal-keyboard-hint" autoComplete="off" autoCapitalize="none" autoCorrect="off" enterKeyHint="send" maxLength={64} spellCheck={false} />
       <button type="submit">{content.submitLabel}<span aria-hidden="true"> ↵</span></button>
     </form>
     <p id="terminal-keyboard-hint" className="terminal-keyboard-hint">{content.keyboardHint}</p>

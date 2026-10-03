@@ -169,6 +169,7 @@ try {
     const p=await ctx.newPage();observe(p);await p.goto(base+(locale==='vi'?'/vi':'')+'/contact');await p.waitForLoadState('networkidle');
     assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     if(width<1024){await p.locator('main').dispatchEvent('pointermove',{pointerType:'touch',clientX:180,clientY:180});assert.equal(await p.locator('.liquid-light').count(),0);}
+    await p.waitForFunction(()=>document.documentElement.style.getPropertyValue('--header-height') && !document.querySelector('main[data-page-motion]') && getComputedStyle(document.querySelector('main')).opacity==='1');
     assert.equal(await p.locator('main').evaluate(el=>getComputedStyle(el).opacity),'1');
     await ctx.close();
   }

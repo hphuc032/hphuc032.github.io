@@ -7,7 +7,8 @@
   .home-teaser .text-link { margin-top: var(--space-6); }
   .home-project-list { list-style: none; padding: 0; margin: 0 0 var(--space-6); }
   .home-project { border-bottom: 1px solid var(--border); }
-  .home-project a { display: grid; grid-template-columns: 2rem 1fr 2rem; gap: var(--space-6); padding-block: var(--space-8); align-items: baseline; text-decoration: none; }
+  .home-project a { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: var(--space-6); padding-block: var(--space-8); align-items: baseline; text-decoration: none; }
+  .home-project a > div { min-width: 0; overflow-wrap: anywhere; }
   .home-project:first-child a { padding-top: 0; }
   .home-project h3 { font-size: clamp(1.75rem, 3.4vw, 3.5rem); line-height: 1.25; transition: transform var(--duration-fast) var(--ease-standard); }
   .home-project p { font-size: var(--text-body); margin-block: var(--space-3) 0; }
@@ -26,7 +27,7 @@
   @media (max-width: 767px) {
     .home-teaser { grid-template-columns: 1fr; gap: var(--space-8); }
     .home-about h2 { font-size: clamp(2.5rem, 8vw, 4rem); max-width: 14ch; }
-    .home-project a { grid-template-columns: 1.5rem 1fr 1.5rem; gap: var(--space-3); }
+    .home-project a { grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem; gap: var(--space-3); }
     .home-project h3 { font-size: clamp(1.65rem, 6.2vw, 2.8rem); }
     .home-connect h2 { font-size: clamp(3rem, 12.5vw, 6rem); }
   }

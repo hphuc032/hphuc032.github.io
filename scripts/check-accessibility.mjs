@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { publishedRoutes } from "./test-fixtures.mjs";
+import { fixtureArticle } from "./lib/writeup-fixtures.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH ?? "playwright");
@@ -15,7 +16,7 @@ const routes = publishedRoutes;
 function watch(page, label) {
   page.on("pageerror", error => runtimeErrors.push(`${label}: ${error.message}`));
   page.on("console", message => {
-    if (["error", "warning"].includes(message.type())) runtimeErrors.push(`${label}: ${message.type()}: ${message.text()}`);
+    if (["error", "warning"].includes(message.type())) runtimeErrors.push(`${label}: ${message.type()}: ${message.text()} ${message.location().url}`);
   });
 }
 
@@ -50,6 +51,9 @@ async function auditDocument(page, route) {
       gaps,
       unnamedControls: controls.filter(item => !item.label),
       mainCount: document.querySelectorAll("main").length,
+      unnamedNavigation: [...document.querySelectorAll("nav")].filter(visible).filter(e=>!e.getAttribute("aria-label") && !e.getAttribute("aria-labelledby")).length,
+      unsafeNewTabs: [...document.querySelectorAll('a[target="_blank"]')].filter(e=>!e.rel.split(/\s+/).includes("noopener") || !e.rel.split(/\s+/).includes("noreferrer")).map(e=>e.href),
+
       headerCount: document.querySelectorAll("body > header,.page-content > header").length,
       footerCount: document.querySelectorAll("footer").length,
       duplicateIds: [...document.querySelectorAll("[id]")].map(item => item.id).filter((id, index, ids) => ids.indexOf(id) !== index),
@@ -58,7 +62,7 @@ async function auditDocument(page, route) {
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       tableIssues: [...document.querySelectorAll("table")].flatMap(table => {
         const issues = [];
-        if (!table.querySelector("caption")) issues.push("missing caption");
+        if (!table.querySelector("caption") && !table.closest('[role="region"][aria-label]')) issues.push("missing caption or named scroll region");
         for (const cell of table.querySelectorAll("th")) if (!cell.hasAttribute("scope")) issues.push("header missing scope");
         return issues;
       }),
@@ -138,6 +142,10 @@ try {
     assert.deepEqual(result.gaps, [], `${route}: heading hierarchy gaps`);
     assert.deepEqual(result.unnamedControls, [], `${route}: unnamed controls`);
     assert.equal(result.mainCount, 1, `${route}: one main landmark`);
+    assert.equal(result.headerCount,1,`${route}: one shell header`);
+    assert.equal(result.unnamedNavigation,0,`${route}: named navigation landmarks`);
+    assert.deepEqual(result.unsafeNewTabs,[],`${route}: secure new-tab links`);
+
     assert.deepEqual(result.duplicateIds, [], `${route}: duplicate ids`);
     assert.equal(result.canvasExposure, 0, `${route}: decorative canvas accessibility exposure`);
     assert.equal(result.focusableInsideHidden, 0, `${route}: no focusable content inside aria-hidden regions`);
@@ -145,9 +153,7 @@ try {
     assert.ok(result.overflow <= 1, `${route}: no page overflow`);
     assert.deepEqual(result.tableIssues, [], `${route}: table semantics`);
     documents.push({ route, locale: result.lang, title: result.title });
-    if (["/", "/vi", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"].includes(route)) {
-      findings.push(...await contrastAudit(page, route));
-    }
+    findings.push(...await contrastAudit(page, route));
     if (["/", "/vi", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"].includes(route)) {
       await writeFile(`test-results/accessibility/${route.replaceAll("/", "-") || "home"}-aria.yml`, await page.locator("body").ariaSnapshot());
     }
@@ -191,6 +197,19 @@ try {
     await page.getByRole("button", { name: menuName, exact: true }).click();
     await page.getByRole("button", { name: closeName, exact: true }).click();
     assert.ok(await menu.evaluate(element => element === document.activeElement), `${path}: Close returns focus`);
+    await menu.click();
+    assert.equal(await page.evaluate(()=>document.body.style.overflow),"hidden",`${path}: modal scroll lock`);
+    await dialog.locator(".index-links a").nth(1).click();
+    await page.waitForURL(url=>url.pathname.includes("projects"));
+    assert.ok(await dialog.evaluate(e=>!e.open),`${path}: navigation closes dialog`);
+    assert.notEqual(await page.evaluate(()=>document.body.style.overflow),"hidden",`${path}: navigation releases scroll lock`);
+    await menu.click();
+    await page.goBack();
+    await page.waitForFunction(()=>!document.querySelector("dialog").open && document.body.style.overflow!=="hidden");
+    assert.equal(await menu.getAttribute("aria-expanded"),"false",`${path}: browser Back closes modal and restores state`);
+    await page.waitForSelector("#hero");
+    assert.ok(await page.locator("#hero").isVisible(),`${path}: Back restores Home after skip-link navigation`);
+
   }
   console.log("PASS skip link, modal naming/state, Escape and focus return in EN/VI");
 
@@ -259,7 +278,7 @@ try {
       await stressContext.close();
       assert.ok(stress.overflow <= 1, `${path} at ${cssWidth} CSS px / DPR ${deviceScaleFactor}: no two-dimensional page scroll`);
   }
-  console.log("PASS 200% zoom-equivalent and 320 CSS-pixel reflow checks");
+  console.log("PASS DPR 1/2 and 320 CSS-pixel reflow checks (DPR is not text zoom)");
 
   const reducedPage = await context.newPage();
   await reducedPage.goto(base + "/");
@@ -271,7 +290,7 @@ try {
   console.log("PASS reduced-motion final states, static sphere, inert wake and cursor");
 
   const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 430, height: 932 }, reducedMotion: "reduce" });
-  for (const route of ["/", "/vi", "/log/analyzing-http-and-https-traffic-with-wireshark", "/vi/log/analyzing-http-and-https-traffic-with-wireshark"]) {
+  for (const route of routes) {
     const noJsPage = await noJs.newPage();
     await noJsPage.goto(base + route, { waitUntil: "domcontentloaded" });
     assert.ok((await noJsPage.locator("main").innerText()).trim().length > 200, `${route}: no-JS content`);
@@ -281,6 +300,103 @@ try {
   }
   await noJs.close();
   console.log("PASS no-JavaScript core reading and reflow");
+
+  // Walk every public page with the keyboard in both layouts; do not scroll or
+  // focus controls manually, which would hide native Tab/fixed-chrome defects.
+  let keyboardControls = 0;
+  for (const width of [390,1440]) {
+    await page.setViewportSize({width,height:900});
+    for (const route of routes) {
+      await page.goto(base + route);
+      await page.evaluate(() => document.fonts.ready);
+      const count = await page.locator('a[href]:visible,button:visible,input:visible,[tabindex="0"]:visible').count();
+      for (let index=0;index<count;index++) {
+        await page.keyboard.press("Tab");
+        const state = await page.evaluate(() => {
+          const e=document.activeElement;
+          if (!(e instanceof HTMLElement) || e.tagName==="BODY") return null;
+          const s=getComputedStyle(e), p=e.parentElement ? getComputedStyle(e.parentElement):null, r=e.getBoundingClientRect();
+          const h=document.querySelector(".site-header").getBoundingClientRect(), f=document.querySelector(".system-status").getBoundingClientRect();
+          return {name:(e.getAttribute("aria-label")||e.textContent||e.id).trim().slice(0,70), indicator:(s.outlineStyle!=="none"&&parseFloat(s.outlineWidth)>=1)||s.boxShadow!=="none"||p?.boxShadow!=="none", exposed:Boolean(e.closest(".site-header")||e.classList.contains("skip-link")|| (r.height > f.top-h.bottom ? r.bottom>h.bottom && r.top<f.top : r.top>=h.bottom-1 && r.bottom<=f.top+1)), outside:r.right<0||r.left>innerWidth};
+        });
+        if (!state) continue;
+        assert.ok(state.indicator, `${route}@${width}: focus indicator ${state.name}`);
+        assert.ok(state.exposed && !state.outside, `${route}@${width}: focus hidden behind chrome ${state.name}`);
+        keyboardControls++;
+      }
+    }
+  }
+  console.log(`PASS keyboard focus visibility and fixed-chrome clearance (${keyboardControls} controls, every public route at 390/1440)`);
+
+  // Shared renderer's unpublished fixture: real CSS and realistic long code/table
+  // strings, without publishing a test route or exposing an unapproved writeup.
+  await page.goto(base + "/writeups");
+  const classes=await page.evaluate(()=>({html:document.documentElement.className,body:document.body.className}));
+  const styles=[];
+  for (const url of await page.locator('link[rel="stylesheet"]').evaluateAll(items=>items.map(e=>e.href))) {
+    const css=await (await context.request.get(url)).text();
+    styles.push(css.replace(/url\((["']?)([^)"']+)\1\)/g,(_,quote,asset)=>`url("${new URL(asset,url).href}")`));
+  }
+  styles.push(await readFile("src/styles/writeups.css","utf8"));
+  for (const language of ["en","vi","en-vi"]) for (const width of [320,768]) {
+    await page.setViewportSize({width,height:900});
+    await page.setContent(`<!doctype html><html lang="${language==='vi'?'vi':'en'}" class="${classes.html}"><head><link rel="icon" href="${new URL("/favicon.svg",base).href}"><style>${styles.join("\n")}</style></head><body class="${classes.body}">${fixtureArticle(language)}</body></html>`);
+    await page.evaluate(async()=>{await document.fonts.ready;document.documentElement.style.setProperty("font-size","200%","important");await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));});
+    assert.equal(await page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).fontSize)),32,"fixture actual 200% root text");
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1), `${language}: Markdown 200% reflow ${width}`);
+    for (const scroller of await page.locator("pre,.writeup-table-scroll").all()) {
+      assert.equal(await scroller.getAttribute("tabindex"),"0");
+      await scroller.focus();
+      await scroller.press("ArrowRight");
+      await page.waitForTimeout(100);
+      assert.ok(await scroller.evaluate(e=>e===document.activeElement));
+      if (await scroller.evaluate(e=>e.scrollWidth>e.clientWidth)) assert.ok(await scroller.evaluate(e=>e.scrollLeft>0),"keyboard scrolls long data");
+    }
+    assert.equal(await page.locator("th:not([scope])").count(),0,"Markdown column header scope");
+  }
+  console.log("PASS safe Markdown fixture: 200% text and keyboard code/table scrolling at 320/768 in three content languages");
+
+  // Forced-colors uses the browser's native emulation; no platform screen-reader claim.
+  const forced = await browser.newContext({viewport:{width:320,height:800},forcedColors:"active",reducedMotion:"reduce"});
+  for (const route of ["/","/vi","/terminal","/contact","/log/analyzing-http-and-https-traffic-with-wireshark"]) {
+    const fc = await forced.newPage();
+    watch(fc, `forced:${route}`);
+    await fc.goto(base + route);
+    const trigger = fc.locator(".header-menu-trigger");
+    await trigger.focus();
+    assert.ok(await trigger.evaluate(e => {const s=getComputedStyle(e);return s.outlineStyle!=="none" && parseFloat(s.outlineWidth)>=1;}), `${route}: forced-colors focus`);
+    await trigger.press("Enter");
+    assert.ok(await fc.locator("dialog").evaluate(e=>e.matches(":modal")), `${route}: forced-colors native menu`);
+    await fc.keyboard.press("Escape");
+    assert.ok(await trigger.evaluate(e=>e===document.activeElement));
+    await fc.close();
+  }
+  await forced.close();
+  console.log("PASS forced-colors focus, menu and recovery on five representative routes");
+
+  await page.goto(base + "/");
+  assert.equal(await page.locator("[data-sphere-skills] li").count(), 13, "13 semantic skills independent of WebGL");
+  assert.equal(await page.locator(".skill-node").count(), 13, "13 keyboard skill controls");
+  await page.setViewportSize({width:320,height:800});
+  await page.evaluate(async()=>{document.documentElement.style.setProperty("font-size","200%","important");await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));});
+  assert.equal(await page.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).fontSize)),32,"Sphere actual 200% root text");
+  for (const skill of await page.locator(".skill-node").all()) {
+    await skill.focus();
+    assert.ok((await skill.getAttribute("aria-label"))?.trim(), "skill has accessible name");
+    assert.ok(await skill.locator(".skill-label").evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=-1 && r.right<=innerWidth+1;}),"200% skill label stays on screen");
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),"focused Sphere does not overflow at 200%");
+
+  }
+  for (const route of routes.filter(route=>route.includes("/log/"))) {
+    await page.goto(base + route);
+    for (const scroller of await page.locator(".log-prose pre,.log-prose table").all()) {
+      assert.equal(await scroller.getAttribute("tabindex"), "0", `${route}: keyboard data scroller`);
+      await scroller.focus();
+      assert.ok(await scroller.evaluate(e=>e===document.activeElement));
+      await scroller.press("ArrowRight");
+    }
+  }
+  console.log("PASS semantic Sphere skills and keyboard article code/table scrollers");
 
   for (const [path, locale, homeLabel] of [
     ["/log/not-published", "en", "Return to carwyn.sec"],
@@ -293,6 +409,15 @@ try {
     await missing.waitForLoadState("networkidle");
     const missingAudit = { status: response?.status(), title: await missing.title(), text: (await missing.locator("body").innerText()).trim(), links: await missing.locator("a[href]").count(), lang: await missing.locator("html").getAttribute("lang") };
     assert.equal(missingAudit.status, 404, `${path}: HTTP 404`);
+    const structure=await auditDocument(missing,path);
+    assert.equal(structure.h1Count,1,`${path}: one 404 heading`);
+    assert.equal(structure.mainCount,1,`${path}: one 404 main`);
+    assert.deepEqual(structure.gaps,[],`${path}: 404 heading order`);
+    assert.ok(structure.overflow<=1,`${path}: 404 reflow`);
+    const recovery=missing.getByRole("link",{name:homeLabel,exact:true});
+    await recovery.focus();
+    assert.ok(await recovery.evaluate(e=>e===document.activeElement && getComputedStyle(e).outlineStyle!=="none"),`${path}: recovery keyboard focus`);
+
     assert.equal(missingAudit.lang, locale, `${path}: localized document language`);
     assert.ok(missingAudit.title.toLowerCase().includes(locale === "vi" ? "không tìm thấy" : "not found"), `${path}: meaningful title`);
     assert.ok(await missing.getByRole("link", { name: homeLabel, exact: true }).count(), `${path}: recovery link`);
