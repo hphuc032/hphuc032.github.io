@@ -35,7 +35,7 @@ export function SecurityLogArticle({ article, locale }: { article: ArticleRecord
           <div><dt>{vi ? "Loại" : "Type"}</dt><dd>{vi ? "Ghi chép kỹ thuật" : "Field note"}</dd></div>
         </dl>
       </header>
-      <div className="log-prose"><Content /></div>
+      <div className="log-prose" lang={locale}><Content /></div>
       <footer className="log-article-footer"><TextLink href={logIndexPath(locale)} variant="editorial" prefetch={false}>{vi ? "← QUAY LẠI SECURITY LOG" : "← BACK TO SECURITY LOG"}</TextLink></footer>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson }} />
     </article>

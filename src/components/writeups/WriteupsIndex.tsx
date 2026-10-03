@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/locales";
 
 const copy = {
   en: { archive: "CTF / CHALLENGE WRITEUPS", empty: "No CTF writeups are published yet.", note: "Technical learning notes and lab analysis are available in the Security Log.", log: "VIEW SECURITY LOG", read: "READ WRITEUP", distinction: "Technical notes", description: "Security Log collects learning, experiments and analysis beyond CTF challenges." },
-  vi: { archive: "CTF / BÀI GIẢI THỬ THÁCH", empty: "Chưa có bài CTF writeup nào được xuất bản.", note: "Các ghi chú học tập và phân tích kỹ thuật hiện có tại Security Log.", log: "XEM SECURITY LOG", read: "ĐỌC WRITEUP", distinction: "Ghi chép kỹ thuật", description: "Security Log lưu các ghi chép học tập, thử nghiệm và phân tích ngoài các thử thách CTF." },
+  vi: { archive: "CTF / BÀI GIẢI THỬ THÁCH", empty: "Chưa có bài giải CTF nào được xuất bản.", note: "Các ghi chú học tập và phân tích kỹ thuật hiện có tại Security Log.", log: "XEM SECURITY LOG", read: "ĐỌC WRITEUP", distinction: "Ghi chép kỹ thuật", description: "Security Log lưu các ghi chép học tập, thử nghiệm và phân tích ngoài các thử thách CTF." },
 } as const;
 
 export function WriteupsIndex({ locale }: { locale: Locale }) {

@@ -9,7 +9,7 @@ export const expertise = [
     id: "network-security", order: 1, state: "published",
     content: {
       en: { state: "published", value: { title: "Network Security / Traffic Analysis", description: "Hands-on work with packet and protocol analysis: TCP/IP, DNS, HTTP and HTTPS traffic, alongside basic network enumeration." } },
-      vi: { state: "published", value: { title: "An toàn mạng / Phân tích lưu lượng", description: "Đã thực hành phân tích gói tin và giao thức: TCP/IP, DNS, lưu lượng HTTP và HTTPS, cùng việc thu thập thông tin mạng ở mức cơ bản." } },
+      vi: { state: "published", value: { title: "An ninh mạng / Phân tích lưu lượng", description: "Đã thực hành phân tích gói tin và giao thức: TCP/IP, DNS, lưu lượng HTTP và HTTPS, cùng việc thu thập thông tin mạng ở mức cơ bản." } },
     },
     toolIds: ["Wireshark", "Nmap"],
   },

@@ -21,7 +21,7 @@ export const experience: readonly Experience[] = [
       } },
       vi: { state: "published", value: {
         role: "Kiểm thử UAT — Ứng dụng web & di động",
-        description: "Kiểm thử chấp nhận người dùng và kiểm thử hồi quy cho ứng dụng web và di động.",
+        description: "Kiểm thử nghiệm thu người dùng và kiểm thử hồi quy cho ứng dụng web và di động.",
         responsibilities: [
           "Thực hiện kiểm thử UAT cho ứng dụng web và di động.",
           "Xây dựng và thực thi kịch bản kiểm thử dựa trên yêu cầu nghiệp vụ.",

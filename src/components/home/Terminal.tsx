@@ -31,7 +31,7 @@ const labels = {
     },
   },
   vi: {
-    section: "Terminal", mode: "Bản đồ lệnh cục bộ", ready: "GIAO DIỆN SẴN SÀNG", consoleLabel: "CARWYN.SEC / GIAO DIỆN CỤC BỘ",
+    section: "Terminal", mode: "Các lệnh cục bộ", ready: "GIAO DIỆN SẴN SÀNG", consoleLabel: "CARWYN.SEC / GIAO DIỆN CỤC BỘ",
     instruction: 'Nhập "help" để xem các lệnh hiện có.', input: "Nhập lệnh portfolio", output: "Lịch sử đầu ra terminal",
     available: "Các lệnh hiện có", invalid: "không tìm thấy lệnh", hint: 'nhập "help" để xem các lệnh hiện có', cleared: "Đã xóa lịch sử terminal.",
     actions: { operations: "MỞ DỰ ÁN TIÊU BIỂU", experience: "MỞ KINH NGHIỆM", achievements: "MỞ THÀNH TỰU", logs: "MỞ SECURITY LOG", contact: "MỞ LIÊN HỆ" },
