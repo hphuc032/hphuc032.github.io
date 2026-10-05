@@ -192,6 +192,9 @@ try {
     const page = await textContext.newPage();
     watch(page, `text200:${route}`);
     await page.goto(base + route);
+    // Apply the test's root-style override after the layout effect has mounted.
+    // Streaming hydration can otherwise replace an early html.style mutation.
+    await page.waitForFunction(() => document.documentElement.style.getPropertyValue("--header-height"));
     const textSize = await page.evaluate(async () => {
       await document.fonts.ready;
       const before=parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -200,7 +203,7 @@ try {
       await document.fonts.ready;
       return {before,after:parseFloat(getComputedStyle(document.documentElement).fontSize)};
     });
-    assert.ok(textSize.after >= textSize.before * 1.99, `${route}: actual root text size doubled`);
+    assert.ok(textSize.after >= textSize.before * 1.99, `${route}: actual root text size doubled (${textSize.before} → ${textSize.after}px)`);
     for (const width of [320,768]) {
       await page.setViewportSize({width,height:1024});
       await page.evaluate(async () => { await document.fonts.ready; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); });

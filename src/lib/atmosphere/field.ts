@@ -91,7 +91,9 @@ export class AtmosphereField {
   draw(context: CanvasRenderingContext2D, now: number, animated: boolean, regions: readonly ProtectedRegion[], scrollY: number) {
     context.clearRect(0, 0, this.width, this.height);
     context.fillStyle = "#d9e2eb";
-    for (let index = 0; index < this.starCount; index++) {
+    // Configuration cannot change inside one draw; avoid density/object work per star.
+    const starCount = this.starCount;
+    for (let index = 0; index < starCount; index++) {
       const star = this.stars[index]!;
       let opacity = star.opacity;
       if (animated) for (const twinkle of this.twinkles) {
