@@ -15,7 +15,7 @@ export function CaseStudy({ project, locale }: { project: Project; locale: Local
   const others = publishedCases(locale).filter(item => item.id !== project.id);
   return <main id="main-content" tabIndex={-1} className="case-study">
     <article className="case-inner" aria-labelledby="case-title">
-      <TextLink href={dedicatedPagePath("projects", locale)!} variant="navigation">{vi ? "← Dự án tiêu biểu" : "← Selected Operations"}</TextLink>
+      <TextLink href={dedicatedPagePath("projects", locale)!} prefetch={false} variant="navigation">{vi ? "← Dự án tiêu biểu" : "← Selected Operations"}</TextLink>
       <header className="case-opening">
         <p className="case-eyebrow">CASE {project.caseNumber}<span>/</span>{project.category?.[locale]?.value}</p>
         <h1 id="case-title" lang="en">{copy.title}</h1>
