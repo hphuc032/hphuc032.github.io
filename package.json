@@ -21,6 +21,7 @@
     "check:contact": "node scripts/check-contact.mjs",
     "check:localization": "node scripts/check-localization.mjs",
     "check:metadata": "node scripts/check-metadata.mjs",
+    "check:pages-validation": "node scripts/check-pages-validation.mjs",
     "check:static-export": "node scripts/check-static-export.mjs",
     "check:projects": "node scripts/check-projects.mjs",
     "sync:writeups": "node --use-env-proxy scripts/sync-writeups.mjs",
