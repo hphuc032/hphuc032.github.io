@@ -33,7 +33,8 @@ try {
     for (const slug of slugs) {
       await page.goto(base + prefix + "/operations/" + slug);
       assert.equal(await page.locator(".case-study h1").count(), 1);
-      assert.equal(await page.locator("canvas,.network-object").count(), 0, "no homepage WebGL on detail routes");
+      assert.equal(await page.locator("canvas:not(.global-atmosphere),.network-object").count(), 0, "no homepage WebGL on detail routes");
+      assert.equal(await page.locator("canvas.global-atmosphere").count(), 1, "one shared atmosphere on detail routes");
       for (const width of [375, 430, 768, 1024, 1440, 1920]) {
         await page.setViewportSize({ width, height: 1000 });
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${locale}/${slug}/${width} overflow`);
@@ -44,10 +45,8 @@ try {
     }
     console.log(`PASS ${locale}: index and three cases at six widths, headings, metadata, no WebGL`);
   }
-  await page.goto(base);
-  await page.getByRole("button", { name: "Index", exact: true }).press("Enter");
-  await page.locator('.index-links a[href$="#operations"]').press("Enter");
-  await page.waitForFunction(() => document.activeElement.id === "operations");
+  await page.goto(base + "/#operations");
+  await page.locator("#operations").focus();
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("03"));
   await page.locator(".operation-link").first().focus();
   await page.waitForTimeout(400);
@@ -60,13 +59,11 @@ try {
   await page.waitForURL("**/vi/operations/secure-api-gateway");
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   assert.ok((await page.locator(".case-summary").textContent()).startsWith("Dự án"));
-  await page.getByRole("button", { name: "Mục lục", exact: true }).click();
-  await page.locator('.index-links a[href$="#operations"]').click();
-  await page.waitForURL("**/vi#operations");
+  await page.goto(base + "/vi#operations");
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("03"));
   await page.getByRole("link", { name: "English", exact: true }).first().click();
   await page.waitForURL("**/#operations");
-  console.log("PASS keyboard preview/links, Index from case, active section, EN/VI equivalent routes/hash");
+  console.log("PASS keyboard preview/links, active section and EN/VI equivalent routes/hash");
   await page.emulateMedia({ reducedMotion: "reduce" });
   assert.equal(await page.locator(".operation-preview").first().evaluate(el => getComputedStyle(el).clipPath), "none");
   await page.emulateMedia({ reducedMotion: "no-preference" });

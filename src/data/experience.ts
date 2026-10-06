@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/locales";
 // Evidence classification and withheld fields: docs/experience-evidence-audit.md.
 export const experience: readonly Experience[] = [
   {
-    id: "uat-web-mobile", order: 1, kind: "technical", state: "published",
+    id: "uat-web-mobile", order: 1, organization: "Era Group", kind: "technical", state: "published",
     dates: { start: { value: "2026-08", precision: "month" }, end: "present" },
     content: {
       en: { state: "published", value: {
@@ -21,7 +21,7 @@ export const experience: readonly Experience[] = [
       } },
       vi: { state: "published", value: {
         role: "Kiểm thử UAT — Ứng dụng web & di động",
-        description: "Kiểm thử chấp nhận người dùng và kiểm thử hồi quy cho ứng dụng web và di động.",
+        description: "Kiểm thử nghiệm thu người dùng và kiểm thử hồi quy cho ứng dụng web và di động.",
         responsibilities: [
           "Thực hiện kiểm thử UAT cho ứng dụng web và di động.",
           "Xây dựng và thực thi kịch bản kiểm thử dựa trên yêu cầu nghiệp vụ.",

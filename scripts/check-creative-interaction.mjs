@@ -47,7 +47,7 @@ try {
   await instrument(context);
   const page = await context.newPage(); watch(page);
   await page.goto(base); await page.waitForTimeout(2800);
-  assert.equal(await page.locator("[data-liquid]").count(), 3);
+  assert.equal(await page.locator("[data-liquid]").count(), 1);
   assert.equal(await page.locator("#identity [data-liquid],#contact [data-liquid]").count(), 0);
   const pause = page.locator(".network-pause");
   if (await pause.count()) await pause.click();
@@ -95,8 +95,7 @@ try {
   });
   await paint(page, "#hero", 12); await calm(page);
   await page.evaluate(() => getSelection().removeAllRanges());
-  await page.locator("#terminal").scrollIntoViewIfNeeded();
-  await paint(page, "#terminal", 25);
+  await page.goto(base + "/terminal");
   await page.locator("#terminal input").hover();
   await calm(page);
   assert.equal(await page.locator(".context-cursor").getAttribute("data-visible"), "false");
@@ -104,29 +103,24 @@ try {
   assert.ok(await page.locator("#terminal input").evaluate(el => el === document.activeElement));
   console.log("PASS selection/native input deferral and immediate Terminal interaction");
 
-  await page.getByRole("button", { name: "Index", exact: true }).click();
-  await page.locator('.index-links a[href$="#operations"]').click();
-  await page.waitForTimeout(1400);
-  const operation = page.locator(".operation-link").first(); await operation.hover();
-  await paint(page, ".operation-row", 35, 200);
-  assert.ok(await page.locator(".operation-preview svg").first().evaluate(el => el.style.transform.includes("perspective")));
-  await page.screenshot({ path: "test-results/creative-interaction/operations-desktop-1440.png" });
-  await calm(page); await operation.focus(); await page.waitForTimeout(400);
-  assert.equal(await page.locator(".operation-preview").first().evaluate(el => getComputedStyle(el).opacity), "1");
+  await page.goto(base + "/#featured-projects");
+  const project = page.locator(".home-project a").first();
+  await project.focus();
+  assert.ok(await project.evaluate(el => el === document.activeElement));
   await page.keyboard.press("Enter"); await page.locator(".case-study").waitFor();
-  assert.equal(await page.locator(".liquid-surface,[data-reveal],canvas").count(), 0);
-  await page.goBack(); await page.locator("#operations").waitFor();
+  assert.equal(await page.locator(".liquid-surface,[data-reveal],canvas:not(.global-atmosphere)").count(), 0);
+  assert.equal(await page.locator(".global-atmosphere").count(), 1);
+  await page.goto(base + "/#featured-projects");
   await page.locator(".site-header a[lang=vi]").click(); await page.waitForFunction(() => document.documentElement.lang === "vi");
-  assert.equal(new URL(page.url()).hash, "#operations");
-  await paint(page, ".operation-row", 20);
+  assert.equal(new URL(page.url()).hash, "#featured-projects");
   await page.emulateMedia({ reducedMotion: "reduce" }); await calm(page);
   assert.equal(await page.locator('[data-arrival-state="running"],[data-arrival-state="armed"]').count(), 0);
   assert.equal(await page.locator("[data-reveal], [data-arrival] span").evaluateAll(els => els.some(el => el.style.clipPath || el.style.transform)), false);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.setViewportSize({ width: 1024, height: 900 });
-  await page.locator("#operations").scrollIntoViewIfNeeded(); await paint(page, ".operation-row", 20);
+  await page.locator("#featured-projects").scrollIntoViewIfNeeded();
   await page.setViewportSize({ width: 1440, height: 1000 }); await calm(page);
-  console.log("PASS preview depth/keyboard parity, route/locale cleanup, live reduced motion and resize");
+  console.log("PASS Home project keyboard navigation, route/locale cleanup, reduced motion and resize");
   await context.close();
 
   for (const locale of ["en", "vi"]) for (const width of [375, 430, 768, 1024, 1440, 1920]) {
@@ -147,7 +141,7 @@ try {
     await p.waitForTimeout(80); await p.evaluate(() => scrollBy(0, 500)); await p.waitForTimeout(850);
     assert.equal(await p.locator('[data-arrival="conclusion"] span').evaluateAll(els => els.some(el => el.style.transform || el.style.clipPath)), false);
     if (width === 430) await p.screenshot({ path: `test-results/creative-interaction/contact-${locale}-430.png` });
-    if (width < 1024) { await paint(p, "#terminal", 4); assert.equal(await p.locator(".liquid-light").evaluateAll(els => els.some(el => el.style.opacity)), false, "touch cannot start pointer effect"); }
+    if (width < 1024) { await paint(p, "#hero", 4); assert.equal(await p.locator(".liquid-light").evaluateAll(els => els.some(el => el.style.opacity)), false, "touch cannot start pointer effect"); }
     const cls = await p.evaluate(() => window.__cls); assert.ok(cls < .01, `CLS ${cls}`);
     layouts.push({ locale, width, cls, titles: targets.length });
     console.log(`PASS ${locale}/${width}: title masks, diacritics/wrap, Contact depth, touch gates, CLS ${cls}`);

@@ -28,6 +28,9 @@ try {
   await page.goto(base);
   await page.waitForTimeout(2400);
   console.log("Initial network", await page.locator(".network-object").getAttribute("data-network-mode"));
+  const initialCls = await page.evaluate(() => window.__shifts);
+  assert.ok(initialCls < .002, `fresh-load Hero CLS ${initialCls}`);
+  console.log("Fresh-load Hero CLS", initialCls);
   for (const locale of ["en", "vi"]) {
     if (locale === "vi") { await page.locator(".site-header").getByRole("link", { name: "Tiếng Việt", exact: true }).click(); await page.waitForFunction(() => document.documentElement.lang === "vi"); }
     for (const width of [375, 430, 768, 1024, 1440, 1920]) {
@@ -73,7 +76,7 @@ try {
   await page.waitForTimeout(1500);
   const resting = await page.evaluate(() => window.__draws);
   await page.waitForTimeout(1200);
-  assert.ok(await page.evaluate(() => window.__draws) - resting <= 2, "idle must not run a continuous render loop; at most one pending two-draw frame");
+  assert.ok(await page.evaluate(() => window.__draws) - resting > 2, "R4 slow auto-rotation renders while visible and unpaused");
   console.log("PASS canvas locale persistence, pause and idle draws", { contexts, paused, resting });
 
   // Exercise the visibility-event branch deterministically in headless Chromium.
@@ -104,17 +107,21 @@ try {
   await staticPage.goto(base);
   await staticPage.waitForTimeout(1000);
   assert.equal(await staticPage.locator(".network-live canvas").count(), 0);
-  assert.ok(await staticPage.locator(".network-static").isVisible());
+  assert.ok(await staticPage.locator(".network-static-desktop").isVisible());
   await mkdir("test-results/hero", { recursive: true });
   await staticPage.screenshot({ path: "test-results/hero/desktop-static-1440.png" });
   const touch = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 430, height: 932 } });
   const mobile = await touch.newPage();
   await mobile.goto(base);
   await mobile.waitForTimeout(2400);
-  assert.equal(await mobile.locator(".network-live canvas").count(), 0);
+  assert.equal(await mobile.locator(".network-live canvas").count(), 1);
+  assert.equal(await mobile.locator(".network-object").getAttribute("data-network-topology"), "mobile");
+  assert.equal(await mobile.locator("[data-sphere-skills] li").count(), 13);
   await mobile.screenshot({ path: "test-results/hero/mobile-430.png" });
   console.log("PASS reduced motion and touch; screenshots saved");
-  console.log("Layout shift", await page.evaluate(() => window.__shifts));
+  // This later accumulator includes scripted viewport changes and DOM fixtures;
+  // it is a lifecycle diagnostic, not the fresh-load CLS above.
+  console.log("Cumulative test layout shifts", await page.evaluate(() => window.__shifts));
   // THREE logs informational context-loss messages, but no warning/error is expected.
   assert.deepEqual(errors, []);
   await reduced.close(); await touch.close();

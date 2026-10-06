@@ -49,11 +49,9 @@ try {
     assert.equal(await page.locator('#achievements button,#achievements [data-cursor],#achievements canvas,#achievements img').count(), 0);
     console.log(`PASS ${locale}: four verified records across four non-empty categories`);
   }
-  await page.goto(base);
+  await page.goto(base + "/#achievements");
   const origin = await page.evaluate(() => performance.timeOrigin);
-  await page.getByRole("button", { name: "Index", exact: true }).press("Enter");
-  await page.locator('.index-links a[href$="#achievements"]').press("Enter");
-  await page.waitForFunction(() => document.activeElement.id === "achievements");
+  await page.locator("#achievements").focus();
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("05"));
   assert.ok(await page.locator("#achievements").evaluate(element => element.matches(":focus-visible") && getComputedStyle(element).outlineStyle !== "none"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
@@ -63,7 +61,7 @@ try {
   await page.getByRole("link", { name: "English", exact: true }).first().click();
   await page.waitForURL("**/#achievements");
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
-  console.log("PASS keyboard Index/focus, active 05, equivalent EN/VI hash navigation");
+  console.log("PASS keyboard focus, active 05, equivalent EN/VI hash navigation");
   await page.emulateMedia({ reducedMotion: "reduce" });
   assert.equal(await page.locator(".achievement-record").first().evaluate(element => getComputedStyle(element).animationName), "none");
   await page.emulateMedia({ reducedMotion: "no-preference" });

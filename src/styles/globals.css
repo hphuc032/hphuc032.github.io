@@ -3,6 +3,7 @@
 @import "./primitives.css";
 @import "./shell.css";
 @import "./hero.css";
+@import "./home.css";
 @import "./identity.css";
 @import "./expertise.css";
 @import "./operations.css";
@@ -11,10 +12,14 @@
 @import "./security-log.css";
 @import "./terminal.css";
 @import "./contact.css";
+@import "./multipage.css";
 @import "./creative-interaction.css";
+@import "./atmosphere.css";
+@import "./motion.css";
 
 @layer base {
   html {
+    scroll-padding-block: calc(var(--header-height) + var(--space-3)) calc(var(--status-height) + var(--space-3));
     color-scheme: dark;
     background: var(--background);
     color: var(--text-primary);
@@ -44,7 +49,7 @@
 
   button, input, select, textarea { font: inherit; }
   h1, h2, h3, h4, h5, h6, p, dd { overflow-wrap: break-word; }
-  main, section[id] { scroll-margin-top: calc(var(--header-height) + var(--space-4)); }
+  main, section[id] { scroll-margin-top: var(--space-1); }
 
   img, svg, video, canvas {
     max-width: 100%;

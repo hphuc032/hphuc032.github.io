@@ -26,7 +26,7 @@ export function Achievements({ locale }: { locale: Locale }) {
 
   return <section id="achievements" className="achievements" aria-labelledby="achievements-title" tabIndex={-1}>
     <div className="achievements-inner">
-      <div className="achievements-topline"><SectionLabel number="06">{copy.section}</SectionLabel><span>{String(records.length).padStart(2, "0")} {copy.count}</span></div>
+      <div className="achievements-topline"><SectionLabel number="04">{copy.section}</SectionLabel><span>{String(records.length).padStart(2, "0")} {copy.count}</span></div>
       <div className="achievements-intro"><h2 id="achievements-title">{copy.heading}</h2><p>{copy.intro}</p></div>
       <div className="achievement-groups">
         {groups.map(group => <section className="achievement-group" aria-labelledby={`achievement-${group.category}`} key={group.category}>

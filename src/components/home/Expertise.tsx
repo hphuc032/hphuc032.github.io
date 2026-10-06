@@ -12,7 +12,7 @@ export function Expertise({ locale }: { locale: Locale }) {
   const records = publishedExpertise(locale);
   return <section id="expertise" className="expertise" aria-labelledby="expertise-title" tabIndex={-1}>
     <div className="expertise-inner">
-      <div className="expertise-topline"><SectionLabel number="03">{copy.section}</SectionLabel><span>{copy.count}</span></div>
+      <div className="expertise-topline"><SectionLabel number="02">{copy.section}</SectionLabel><span>{copy.count}</span></div>
       <div className="expertise-introduction">
         <h2 id="expertise-title" data-reveal="chapter" data-reveal-key="expertise">{copy.heading}</h2>
         <p>{copy.note}</p>

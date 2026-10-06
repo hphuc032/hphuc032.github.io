@@ -2,17 +2,17 @@
 
 import type { MouseEvent, ReactNode } from "react";
 
-export function BackToTopLink({ children }: { children: ReactNode }) {
+export function BackToTopLink({ children, targetId = "hero" }: { children: ReactNode; targetId?: string }) {
   function moveToTop(event: MouseEvent<HTMLAnchorElement>) {
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
     const main = document.getElementById("main-content");
-    const hero = document.getElementById("hero");
-    if (!main || !hero) return;
+    const target = document.getElementById(targetId);
+    if (!main || !target) return;
     event.preventDefault();
-    history.pushState(null, "", "#hero");
-    hero.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+    history.pushState(null, "", `#${targetId}`);
+    target.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
     main.focus({ preventScroll: true });
   }
 
-  return <a href="#hero" onClick={moveToTop}>{children}</a>;
+  return <a href={`#${targetId}`} onClick={moveToTop}>{children}</a>;
 }

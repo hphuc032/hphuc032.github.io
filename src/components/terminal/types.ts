@@ -28,6 +28,8 @@ export type TerminalResponse = {
 
 export type TerminalContent = {
   prompt: string;
+  submitLabel: string;
+  keyboardHint: string;
   ready: string;
   consoleLabel: string;
   instruction: string;

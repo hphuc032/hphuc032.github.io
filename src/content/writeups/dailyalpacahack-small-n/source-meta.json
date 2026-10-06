@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "dailyalpacahack-small-n",
+  "slug": "dailyalpacahack-small-n",
+  "source": {
+    "repository": "hphuc032/ctf-writeups",
+    "ref": "f42cd29d383deafe0882020d91cb824eb03f342a",
+    "path": "DailyAlpacahack/Web/Small_n/README.md",
+    "url": "https://raw.githubusercontent.com/hphuc032/ctf-writeups/f42cd29d383deafe0882020d91cb824eb03f342a/DailyAlpacahack/Web/Small_n/README.md"
+  },
+  "normalization": "UTF-8; BOM removed; CRLF/CR converted to LF; prose unchanged",
+  "upstreamSha256": "791ea36a380dedf0a8bd65c8ac5c999a15d9d661c3d012ba7ae1d57f918414df",
+  "sourceSha256": "791ea36a380dedf0a8bd65c8ac5c999a15d9d661c3d012ba7ae1d57f918414df",
+  "findings": {
+    "errors": [],
+    "warnings": [],
+    "referencedAssets": []
+  },
+  "assets": []
+}

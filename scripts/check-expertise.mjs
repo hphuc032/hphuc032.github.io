@@ -42,11 +42,9 @@ try {
     assert.equal(await page.locator('#expertise button, #expertise a, #expertise [data-cursor], #expertise canvas, #expertise img').count(), 0);
     console.log(`PASS ${locale}: six widths, four semantic rows, visible scope/tools, no overflow or fake controls`);
   }
-  await page.goto(base);
+  await page.goto(base + "/#expertise");
   const origin = await page.evaluate(() => performance.timeOrigin);
-  await page.getByRole("button", { name: "Index", exact: true }).press("Enter");
-  await page.locator('.index-links a[href$="#expertise"]').press("Enter");
-  await page.waitForFunction(() => document.activeElement.id === "expertise");
+  await page.locator("#expertise").focus();
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("02"));
   assert.ok(await page.locator("#expertise").evaluate(el => el.matches(":focus-visible") && getComputedStyle(el).outlineStyle !== "none"));
   await page.getByRole("link", { name: "Tiếng Việt", exact: true }).first().click();
@@ -60,7 +58,7 @@ try {
   await page.reload();
   await page.waitForFunction(() => document.querySelector(".status-section").textContent.includes("02"));
   assert.equal(await page.locator('.initialization[data-play]').count(), 0);
-  console.log("PASS keyboard Index, focus-visible destination, active 02 index, EN/VI hash SPA, refresh");
+  console.log("PASS keyboard focus-visible destination, active 02 status, EN/VI hash SPA, refresh");
   await page.emulateMedia({ reducedMotion: "reduce" });
   assert.equal(await page.locator(".expertise-row").first().evaluate(el => getComputedStyle(el).animationName), "none");
   assert.equal(await page.locator(".expertise-description").count(), 4);

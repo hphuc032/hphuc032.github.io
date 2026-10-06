@@ -9,16 +9,27 @@
   },
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
+    "predev": "node scripts/prepare-writeup-assets.mjs",
     "build": "node scripts/build.mjs",
     "build:github-pages": "node scripts/build.mjs --github-pages",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint . --max-warnings=0",
     "type-check": "next typegen && tsc --noEmit",
+    "check:accessibility": "node scripts/check-accessibility.mjs",
+    "check:responsive": "node scripts/check-responsive.mjs",
     "check:routes": "node scripts/check-routes.mjs",
     "check:contact": "node scripts/check-contact.mjs",
     "check:localization": "node scripts/check-localization.mjs",
     "check:metadata": "node scripts/check-metadata.mjs",
-    "check:static-export": "node scripts/check-static-export.mjs"
+    "check:pages-validation": "node scripts/check-pages-validation.mjs",
+    "check:static-export": "node scripts/check-static-export.mjs",
+    "check:projects": "node scripts/check-projects.mjs",
+    "sync:writeups": "node --use-env-proxy scripts/sync-writeups.mjs",
+    "check:writeups": "node scripts/check-writeups.mjs",
+    "test:writeups": "node --test scripts/writeup-pipeline.test.mjs scripts/writeup-rendering.test.mjs",
+    "prepare:writeups": "node scripts/prepare-writeup-assets.mjs",
+    "check:writeups-ui": "node scripts/check-writeups-ui.mjs",
+    "check:writeups-export": "node scripts/check-writeups-export.mjs"
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
@@ -27,6 +38,8 @@
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
     "server-only": "0.0.1",
     "three": "0.182.0"
   },

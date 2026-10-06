@@ -26,14 +26,15 @@ try {
     assert.equal(await page.locator(".network-object").getAttribute("data-network-mode"), "static");
     assert.equal(await page.locator(".network-live canvas").count(), 0);
     assert.equal(await page.locator(".liquid-light").evaluateAll(els => els.some(el => el.width !== 1 || el.height !== 1)), false);
-    assert.equal(await page.locator(".network-static").evaluate(el => getComputedStyle(el).opacity), "1");
+    assert.equal(await page.locator(".network-static-desktop").evaluate(el => getComputedStyle(el).opacity), "1");
     if (mode === "blocked-enhancements") {
-      // Chapter GSAP is now requested only as Identity approaches the viewport.
-      await page.locator('[data-arrival="portrait"]').evaluate(el => scrollTo(0, scrollY + el.getBoundingClientRect().top - innerHeight - 80));
+      // Chapter GSAP is now requested only as the About teaser approaches the viewport.
+      await page.locator('[data-reveal-key="home-about"]').evaluate(el => scrollTo(0, scrollY + el.getBoundingClientRect().top - innerHeight - 80));
       await page.waitForTimeout(800);
       assert.ok(blocked >= 2, "WebGL and chapter GSAP were fault-injected");
-      assert.equal(await page.locator('[data-arrival="portrait"]').evaluate(el => getComputedStyle(el).opacity), "1");
+      assert.equal(await page.locator('[data-reveal-key="home-about"]').evaluate(el => getComputedStyle(el).opacity), "1");
     }
+    assert.equal(await page.locator("[data-sphere-skills] li").count(), 13);
     console.log(`PASS ${mode}: readable heading and complete static sphere`);
     await context.close();
   }

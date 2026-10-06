@@ -2,7 +2,7 @@ export type NetworkPoint = readonly [number, number, number];
 export type NetworkEdge = readonly [number, number];
 
 /** Fixed seed, local neighbors, no globe/map data. Shared by SVG and WebGL. */
-function createNetwork(count = 112, seed = 2026) {
+function createNetwork(count = 112, seed = 2026, edgeLimit = 220) {
   let state = seed;
   const random = () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296; };
   const nodes: NetworkPoint[] = [];
@@ -24,11 +24,12 @@ function createNetwork(count = 112, seed = 2026) {
       .filter(({ j }) => j !== i).sort((a, b) => a.distance - b.distance).slice(0, i % 3 === 0 ? 3 : 2);
     for (const { j } of nearest) {
       const a = Math.min(i, j), b = Math.max(i, j), key = `${a}:${b}`;
-      if (!keys.has(key) && edges.length < 220) { keys.add(key); edges.push([a, b]); }
+      if (!keys.has(key) && edges.length < edgeLimit) { keys.add(key); edges.push([a, b]); }
     }
   });
   return { nodes, edges };
 }
 export const network = createNetwork();
+export const mobileNetwork = createNetwork(48, 2026, 80);
 export function nodeColor(index: number) { return index % 37 === 0 ? "#00ffb2" : index % 47 === 0 ? "#00c8ff" : "#b6bdc3"; }
 export function projectPoint(point: NetworkPoint) { return [250 + point[0] * 195, 250 - point[1] * 195] as const; }

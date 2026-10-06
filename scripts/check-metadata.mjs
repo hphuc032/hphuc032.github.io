@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { publishedRoutes } from "./test-fixtures.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH ?? "playwright");
@@ -13,6 +14,9 @@ try {
   for (const [path, locale] of [
     ["/", "en"],
     ["/vi", "vi"],
+    ["/projects", "en"],
+    ["/vi/about", "vi"],
+    ["/terminal", "en"],
     ["/operations/secure-api-gateway", "en"],
     ["/vi/log/analyzing-http-and-https-traffic-with-wireshark", "vi"],
   ]) {
@@ -33,11 +37,12 @@ try {
   }
 
   const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
-  assert.equal((sitemap.match(/<url>/g) ?? []).length, 12);
+  assert.equal((sitemap.match(/<url>/g) ?? []).length, publishedRoutes.length);
   assert.equal(sitemap.includes("dev/design-system"), false);
   assert.equal(sitemap.includes("not-published"), false);
   assert.ok(sitemap.includes(`${expectedOrigin}/vi/log/analyzing-http-and-https-traffic-with-wireshark`));
-  console.log("PASS sitemap: exactly 12 published localized routes and no draft/development entries");
+  assert.ok(sitemap.includes(`${expectedOrigin}/projects`) && sitemap.includes(`${expectedOrigin}/vi/contact`));
+  console.log(`PASS sitemap: exactly ${publishedRoutes.length} published localized routes and no draft/development entries`);
 } finally {
   await browser.close();
 }
