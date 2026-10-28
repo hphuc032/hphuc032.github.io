@@ -1,0 +1,8 @@
+.external-writing-record { border-top: 1px solid var(--border); padding-block: var(--space-8); }
+.external-writing-record .external-writing-label { margin: 0 0 var(--space-6); color: var(--text-subtle); font: var(--text-mono-label)/1.7 var(--font-technical), monospace; }
+.external-writing-record h3 { max-width: 23ch; margin: 0; font-size: clamp(2rem, 3.8vw, 4rem); font-weight: 500; line-height: 1.25; letter-spacing: -.045em; overflow-wrap: anywhere; }
+.external-writing-record h3 a { color: inherit; text-decoration: none; }
+.external-writing-record h3 a:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.external-writing-record .text-link { margin-top: var(--space-6); }
+.log-external-writing { margin-top: var(--space-16); }
+.log-external-writing > h2 { margin-bottom: var(--space-6); font-size: var(--text-heading-3); font-weight: 500; }

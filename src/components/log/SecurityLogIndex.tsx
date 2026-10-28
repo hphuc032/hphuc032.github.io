@@ -1,4 +1,5 @@
 import { LogEntryRow } from "@/components/log/LogEntryRow";
+import { ExternalWriting } from "@/components/log/ExternalWriting";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { TextLink } from "@/components/ui/TextLink";
 import { publishedSecurityLogs } from "@/data/security-log";
@@ -18,6 +19,10 @@ export function SecurityLogIndex({ locale }: { locale: Locale }) {
       </header>
       <div className="log-index-count"><span>{vi ? "Hồ sơ công khai" : "Published record"}</span><strong>{String(entries.length).padStart(2, "0")}</strong></div>
       <ol className="security-log-list">{entries.map(entry => <LogEntryRow key={entry.id} entry={entry} locale={locale} />)}</ol>
+      <section className="log-external-writing" aria-labelledby="external-writing-title">
+        <h2 id="external-writing-title">{vi ? "Bài viết trên nền tảng khác" : "Published elsewhere"}</h2>
+        <ExternalWriting locale={locale} />
+      </section>
     </div>
   </main>;
 }

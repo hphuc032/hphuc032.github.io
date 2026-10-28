@@ -1,6 +1,7 @@
 import { DeploymentLink } from "@/components/ui/DeploymentLink";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { TextLink } from "@/components/ui/TextLink";
+import { ExternalWriting } from "@/components/log/ExternalWriting";
 import { profile } from "@/data/profile";
 import { homeLabels } from "@/data/home";
 import { publishedCases } from "@/data/projects";
@@ -45,6 +46,7 @@ export function HomeTeasers({ locale }: { locale: Locale }) {
           <p>{entry.content[locale]!.value.excerpt}</p>
           <TextLink href={logArticlePath(entry.slug, locale)} variant="editorial" arrow="right" prefetch={false}>{copy.read}<span className="sr-only">: {entry.content[locale]!.value.title}</span></TextLink>
         </article>)}
+        <ExternalWriting locale={locale} />
         <TextLink href={logIndexPath(locale)} variant="editorial" arrow="right" prefetch={false}>{copy.archive}</TextLink>
       </div>
     </section>
