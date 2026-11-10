@@ -12,10 +12,9 @@ export function Hero({ locale }: { locale: Locale }) {
   return <section id="hero" className="hero" aria-labelledby="hero-title" data-liquid="1">
     <LiquidLight />
     <div className="hero-grid-floor" aria-hidden="true" />
-    <HeroMarquee name={profile.name.toUpperCase()} locale={locale} />
+    <HeroMarquee name={profile.name.toUpperCase()} signature={profile.name} locale={locale} />
     <div className="hero-topline" data-hero-detail>
       <SectionLabel number="01">HERO</SectionLabel>
-      <span className="hero-signature" lang="en">{profile.name}</span>
     </div>
     <div className="hero-composition">
     <h1 id="hero-title" className="hero-heading" lang="en" aria-label="UNDERSTAND SYSTEMS. DEFEND THEM.">
