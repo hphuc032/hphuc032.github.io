@@ -81,12 +81,18 @@ try {
           const portrait = image.getBoundingClientRect();
           const title = document.querySelector(".hero-heading").getBoundingClientRect();
           const instruction = document.querySelector(".network-instruction").getBoundingClientRect();
-          return { width: innerWidth, overflow: document.documentElement.scrollWidth > innerWidth, header: header.toJSON(), controls, portrait: portrait.toJSON(), title: title.toJSON(), instruction: instruction.toJSON(), imageLoaded: image.complete && image.naturalWidth > 0, source: image.currentSrc };
+          const signature = document.querySelector(".hero-marquee-signature").getBoundingClientRect();
+          const marquee = document.querySelector(".hero-marquee-window").getBoundingClientRect();
+          const network = document.querySelector(".network-object").getBoundingClientRect();
+          return { width: innerWidth, overflow: document.documentElement.scrollWidth > innerWidth, header: header.toJSON(), controls, portrait: portrait.toJSON(), title: title.toJSON(), instruction: instruction.toJSON(), signature: signature.toJSON(), marquee: marquee.toJSON(), network: network.toJSON(), imageLoaded: image.complete && image.naturalWidth > 0, source: image.currentSrc };
         });
         assert.equal(layout.overflow, false, `${locale}/${theme}/${width}`);
         assert.ok(layout.imageLoaded && layout.source.includes(".webp"), "optimized real portrait loaded");
         assert.ok(layout.portrait.width > 180 && layout.portrait.height > 200, `${locale}/${theme}/${width}: ${JSON.stringify(layout.portrait)}`);
         assert.ok(layout.controls.every(rect => rect.left >= 0 && rect.right <= width + 1 && rect.height >= 43.99));
+        assert.ok(layout.signature.bottom <= layout.marquee.top, "bold profile name sits above the moving name line");
+        assert.ok(layout.network.width <= width * .51, "Network Sphere is reduced to approximately half the viewport width");
+        assert.ok(layout.network.right >= width * .9, "Network Sphere is anchored in the right corner");
         assert.equal(layout.header.height, 80, "existing header height preserved at base text size");
         if (width < 900) {
           assert.ok(layout.title.bottom <= layout.portrait.top + 1, "mobile/tablet portrait does not cover slogan");
@@ -133,6 +139,10 @@ try {
     const page = await context.newPage(); watch(page);
     await page.goto(base);
     await page.waitForFunction(() => document.querySelector(".hero-marquee")?.dataset.running === "true");
+    const firstX = await page.locator(".hero-marquee-track").evaluate(el => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+    await page.waitForTimeout(250);
+    const nextX = await page.locator(".hero-marquee-track").evaluate(el => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+    assert.ok(nextX < firstX, "marquee text travels from right to left");
     await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, value: true }); document.dispatchEvent(new Event("visibilitychange")); });
     await page.waitForFunction(() => document.querySelector(".hero-marquee").dataset.running === "false");
     await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event("visibilitychange")); });
