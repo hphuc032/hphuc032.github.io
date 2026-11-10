@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/i18n/locales";
 
 /** CSS owns the loop. React only handles pause, visibility and section lifecycle. */
-export function HeroMarquee({ name, locale }: { name: string; locale: Locale }) {
+export function HeroMarquee({ name, signature, locale }: { name: string; signature: string; locale: Locale }) {
   const root = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   useEffect(() => {
@@ -29,6 +29,7 @@ export function HeroMarquee({ name, locale }: { name: string; locale: Locale }) 
     };
   }, [paused]);
   return <div ref={root} className="hero-marquee" data-running="false">
+    <p className="hero-marquee-signature" lang="en">{signature}</p>
     <div className="hero-marquee-window" aria-hidden="true"><div className="hero-marquee-track">
       <span>{name}</span><span>{name}</span>
     </div></div>
