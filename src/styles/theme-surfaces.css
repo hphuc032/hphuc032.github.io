@@ -1,0 +1,18 @@
+/* Preserve the established dark art direction; light paper surfaces use one neutral family. */
+html[data-theme="light"] :is(.identity, .experience, .contact) {
+  --identity-paper: var(--surface);
+  --experience-paper: var(--surface);
+  --contact-paper: var(--surface);
+  --text-primary: var(--site-text-primary);
+  --text-muted: var(--site-text-muted);
+  --text-subtle: var(--site-text-subtle);
+  --border: var(--site-border);
+  --accent-digital: var(--site-digital);
+  --focus: var(--site-focus);
+}
+html[data-theme="light"] .global-atmosphere { filter: invert(1); opacity: .6; }
+html[data-theme="light"] .network-stage { filter: brightness(.5); }
+html[data-theme="light"] .contact-record:hover .contact-value { color: var(--accent-cyber); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle { transition: none; }
+}

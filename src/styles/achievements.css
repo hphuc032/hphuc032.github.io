@@ -1,9 +1,9 @@
 /* Editorial evidence register: factual status, restrained contrast, no trophy UI. */
 .achievements {
-  --achievement-surface: #0a1012;
-  --achievement-border: #344044;
-  --achievement-muted: #aeb9ba;
-  --achievement-subtle: #7f8c8e;
+  --achievement-surface: var(--achievement-paper);
+  --achievement-border: var(--achievement-line);
+  --achievement-muted: var(--achievement-secondary);
+  --achievement-subtle: var(--achievement-tertiary);
   background: var(--achievement-surface);
   color: var(--text-primary);
   border-top: 1px solid var(--achievement-border);
@@ -33,11 +33,11 @@
 .achievement-links { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); list-style: none; margin: var(--space-6) 0 0; padding: 0; }
 .achievement-links a { display: inline-flex; align-items: baseline; gap: var(--space-2); min-height: 2.75rem; padding-block: var(--space-3); color: var(--text-primary); font: 500 var(--text-metadata)/1.5 var(--font-technical), monospace; letter-spacing: .05em; text-transform: uppercase; text-decoration: underline; text-decoration-color: var(--achievement-border); text-underline-offset: .35em; }
 .achievement-links a:focus-visible { text-decoration-color: currentColor; }
-@media (hover: hover) and (pointer: fine) { .achievement-links a:hover { color: #9bc8c4; text-decoration-color: currentColor; } }
+@media (hover: hover) and (pointer: fine) { .achievement-links a:hover { color: var(--achievement-accent); text-decoration-color: currentColor; } }
 .achievement-status { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); border-left: 1px solid var(--achievement-border); padding-left: var(--space-6); }
 .achievement-status strong { color: var(--text-primary); font: 500 var(--text-metadata)/1.5 var(--font-technical), monospace; letter-spacing: .055em; }
 .achievement-record[data-status="in-progress"] .achievement-status strong { color: var(--warning); }
-.achievement-record[data-status="core-team"] .achievement-status strong { color: #9bc8c4; }
+.achievement-record[data-status="core-team"] .achievement-status strong { color: var(--achievement-accent); }
 @media (max-width: 63.99rem) {
   .achievement-record { grid-template-columns: 4rem 1fr; }
   .achievement-status { grid-column: 2; margin-top: var(--space-4); border-left: 0; padding-left: 0; flex-direction: row; align-items: baseline; gap: var(--space-6); }

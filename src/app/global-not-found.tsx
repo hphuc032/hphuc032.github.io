@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BilingualNotFoundContent } from "@/components/layout/NotFoundContent";
 import { editorialFont, technicalFont } from "@/styles/fonts";
 import { publicAssetPath } from "@/lib/deployment-path";
+import { themeBootstrap } from "@/lib/theme";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -23,8 +24,8 @@ export default function GlobalNotFound() {
     addEventListener("pagehide", () => observer.disconnect());
     addEventListener("pageshow", event => { if (event.persisted) { localize(); observer.observe(document.head, { childList: true, subtree: true, characterData: true }); } });
   }`;
-  return <html lang="en" suppressHydrationWarning className={`dark ${editorialFont.variable} ${technicalFont.variable}`}>
-    <head><script dangerouslySetInnerHTML={{ __html: localeScript }} /></head>
+  return <html lang="en" data-theme="dark" suppressHydrationWarning className={`dark ${editorialFont.variable} ${technicalFont.variable}`}>
+    <head><script dangerouslySetInnerHTML={{ __html: themeBootstrap }} /><script dangerouslySetInnerHTML={{ __html: localeScript }} /></head>
     <body>
       <BilingualNotFoundContent />
     </body>

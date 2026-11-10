@@ -1,5 +1,6 @@
 /* Canonical values. Accents mark interaction, not large surfaces. */
 :root {
+  --theme-color-scheme: dark;
   --background: #050505;
   --surface: #0b0d0f;
   --surface-raised: #12171b;
@@ -16,6 +17,40 @@
   --overlay: rgb(5 5 5 / 88%);
   --selection: var(--accent-cyber);
   --focus: var(--accent-cyber);
+  /* Shared aliases let local editorial surfaces opt into the global palette. */
+  --site-text-primary: var(--text-primary);
+  --site-text-muted: var(--text-muted);
+  --site-text-subtle: var(--text-subtle);
+  --site-border: var(--border);
+  --site-digital: var(--accent-digital);
+  --site-focus: var(--focus);
+  --reading-paper: #e2e5e0;
+  --reading-primary: #171c1a;
+  --reading-muted: #46514d;
+  --reading-subtle: #586660;
+  --reading-border: #a8b1ac;
+  --reading-border-active: #53645d;
+  --reading-accent: #145f66;
+  --reading-callout: #32777b;
+  --reading-selection: #193b3e;
+  --code-background: #101715;
+  --code-text: #d9e4df;
+  --code-border: #33403c;
+  --achievement-paper: #0a1012;
+  --achievement-line: #344044;
+  --achievement-secondary: #aeb9ba;
+  --achievement-tertiary: #7f8c8e;
+  --achievement-accent: #9bc8c4;
+  --terminal-background: #090e0f;
+  --terminal-line: #2d393b;
+  --terminal-secondary: #a9b5b4;
+  --terminal-tertiary: #91a09e;
+  --terminal-status: #8abdb6;
+  --footer-background: #060909;
+  --footer-border: #293231;
+  --visual-access: #111a1e;
+  --visual-assessment: #111b17;
+  --visual-protocol: #131920;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -57,6 +92,51 @@
   --z-emergency: 70;
   --header-height: 5rem;
   --status-height: 3.5rem;
+}
+
+html[data-theme="light"] {
+  --theme-color-scheme: light;
+  --background: #f1f3f4;
+  --surface: #e8ecef;
+  --surface-raised: #ffffff;
+  --surface-hover: #dde3e7;
+  --text-primary: #20272d;
+  --text-muted: #4e5c66;
+  --text-subtle: #596772;
+  --border: #c5cdd3;
+  --border-active: #7c8b96;
+  --accent-cyber: #007567;
+  --accent-digital: #006f94;
+  --alert: #b51d3e;
+  --warning: #775114;
+  --overlay: rgb(32 39 45 / 65%);
+  --reading-paper: #e8ecef;
+  --reading-primary: #20272d;
+  --reading-muted: #4e5c66;
+  --reading-subtle: #596772;
+  --reading-border: #bcc6ce;
+  --reading-border-active: #72838e;
+  --reading-accent: #006b7b;
+  --reading-callout: #007386;
+  --reading-selection: #164953;
+  --code-background: #dce3e7;
+  --code-text: #202e37;
+  --code-border: #9eafb9;
+  --achievement-paper: #e8ecef;
+  --achievement-line: #b8c4cc;
+  --achievement-secondary: #4e5c66;
+  --achievement-tertiary: #596772;
+  --achievement-accent: #006f67;
+  --terminal-background: #e8ecef;
+  --terminal-line: #9eafb9;
+  --terminal-secondary: #3e525c;
+  --terminal-tertiary: #52656e;
+  --terminal-status: #006c62;
+  --footer-background: #e8ecef;
+  --footer-border: #b8c4cc;
+  --visual-access: #e0e8ed;
+  --visual-assessment: #e1e9e4;
+  --visual-protocol: #e2e7ed;
 }
 
 @theme inline {

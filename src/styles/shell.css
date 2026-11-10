@@ -8,6 +8,12 @@
   .desktop-navigation a[aria-current="page"] { color: var(--text-primary); }
   .desktop-navigation a[aria-current="page"]::after { transform: scaleX(1); transform-origin: left; }
   .header-controls { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: clamp(.75rem, 3vw, 3rem); }
+  .theme-toggle { display: inline-grid; place-items: center; width: 44px; min-width: 44px; height: 44px; padding: 12px; background: transparent; color: var(--text-muted); border: 0; cursor: pointer; transition: color var(--duration-fast) var(--ease-standard); }
+  .theme-toggle:hover { color: var(--accent-digital); }
+  .theme-toggle svg { width: 20px; height: 20px; grid-area: 1 / 1; }
+  .theme-sun { display: none; }
+  html[data-theme="light"] .theme-moon { display: none; }
+  html[data-theme="light"] .theme-sun { display: block; }
   .menu-trigger, .language-selector { font-family: var(--font-technical), monospace; font-size: var(--text-mono-label); }
   .menu-trigger { display: inline-flex; min-height: 44px; align-items: center; padding: var(--space-3); cursor: pointer; color: var(--text-primary); background: transparent; border: 0; }
   .header-menu-trigger { display: none; }

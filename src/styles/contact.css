@@ -37,8 +37,8 @@
   .contact-record:hover .contact-value { color: #0b6256; }
   .contact-record:hover .contact-action { transform: translateX(var(--space-2)); }
 }
-.end-system { background: #060909; color: var(--text-primary); border-top: 1px solid #293231; padding-block: clamp(4rem, 7vw, 7rem) calc(var(--status-height) + var(--space-12)); }
-.end-system-topline { padding-bottom: var(--space-16); border-bottom: 1px solid #293231; }
+.end-system { background: var(--footer-background); color: var(--text-primary); border-top: 1px solid var(--footer-border); padding-block: clamp(4rem, 7vw, 7rem) calc(var(--status-height) + var(--space-12)); }
+.end-system-topline { padding-bottom: var(--space-16); border-bottom: 1px solid var(--footer-border); }
 .end-system-topline .status-indicator { color: var(--text-muted); }
 .end-system-topline .status-indicator > :last-child { min-width: 0; overflow-wrap: anywhere; }
 .end-system-closing { display: flex; justify-content: space-between; align-items: end; gap: var(--space-8); padding-block: var(--space-16) var(--space-12); }

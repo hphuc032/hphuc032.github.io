@@ -103,6 +103,8 @@ async function contrastAudit(page, label) {
       return (Math.max(one, two) + .05) / (Math.min(one, two) + .05);
     }
     const candidates = [...document.querySelectorAll("body *")].filter(element => {
+      // The duplicated outline name is decorative; real identity and slogan remain audited.
+      if (element.closest('.hero-marquee-window[aria-hidden="true"]')) return false;
       const style = getComputedStyle(element), rect = element.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" &&
         [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());

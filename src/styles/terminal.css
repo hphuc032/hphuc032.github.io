@@ -1,8 +1,8 @@
 /* R9 owns only the dedicated Terminal; no global or other-page selectors. */
 main[data-page="terminal"] {
-  --terminal-border: #2d393b;
-  --terminal-muted: #a9b5b4;
-  --terminal-subtle: #91a09e;
+  --terminal-border: var(--terminal-line);
+  --terminal-muted: var(--terminal-secondary);
+  --terminal-subtle: var(--terminal-tertiary);
 }
 main[data-page="terminal"] .dedicated-page-opening { padding-bottom: var(--space-12); }
 main[data-page="terminal"] .dedicated-page-opening > p { margin-left: 0; max-width: 42rem; }
@@ -10,9 +10,9 @@ main.dedicated-page[data-page="terminal"] .terminal-section { padding-block: var
 main[data-page="terminal"] .terminal-inner { width: min(calc(100% - 2 * var(--page-gutter)), var(--wide-width)); margin-inline: auto; }
 main[data-page="terminal"] .terminal-topline { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-6); }
 main[data-page="terminal"] .terminal-topline h2 { font: var(--text-mono-label)/1.65 var(--font-technical), monospace; color: var(--terminal-subtle); text-transform: uppercase; letter-spacing: .055em; }
-main[data-page="terminal"] .terminal-console { border: 1px solid var(--terminal-border); background: #090e0f; }
+main[data-page="terminal"] .terminal-console { border: 1px solid var(--terminal-border); background: var(--terminal-background); }
 main[data-page="terminal"] .terminal-console-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--terminal-border); color: var(--terminal-subtle); font: .75rem/1.65 var(--font-technical), monospace; letter-spacing: .055em; }
-main[data-page="terminal"] .terminal-console-bar span:last-child { color: #8abdb6; }
+main[data-page="terminal"] .terminal-console-bar span:last-child { color: var(--terminal-status); }
 main[data-page="terminal"] .terminal-output { height: clamp(22rem, 42vh, 34rem); overflow-y: auto; padding: clamp(1rem, 3vw, 2.5rem); scrollbar-color: var(--terminal-border) transparent; overflow-wrap: anywhere; }
 main[data-page="terminal"] .terminal-output:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; }
 main[data-page="terminal"] .terminal-welcome { margin-bottom: var(--space-8); color: var(--terminal-muted); font: var(--text-body-sm)/1.7 var(--font-technical), monospace; }
