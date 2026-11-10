@@ -67,7 +67,7 @@ Browser scripts use the existing external Playwright runtime via `PLAYWRIGHT_MOD
 - PASS `node scripts/check-hero-fallbacks.mjs <normal-origin>`.
 - PASS `node scripts/measure-hero.mjs <normal-origin>` before and after.
 
-The initial Hero run exposed a marquee/Sphere Pause hit-target overlap; moving Sphere Pause to the lower-left edge resolved it. Responsive stress exposed a clipped slogan at 200%/1024px; enlarged type now wraps cleanly. Both suites were rerun without relaxing those assertions. The new theme test initially reseeded localStorage on every load and measured resize before chrome observers settled; its fixture now seeds once and waits two frames, retaining the original geometry/persistence assertions. These diagnostics are not claimed as initial passes.
+The initial Hero run exposed a marquee/Sphere Pause hit-target overlap; moving Sphere Pause to the lower-left edge resolved it. Responsive stress exposed a clipped slogan at 200%/1024px; enlarged type now wraps cleanly. Both suites were rerun without relaxing those assertions. Final mobile image review also found the Sphere caption partly behind the portrait: a small caption/bottomline spacing adjustment clears it, with a new mobile/tablet overlap assertion. Lint, Pages build, static validation and the full both-theme suite passed again after that adjustment. The new theme test initially reseeded localStorage on every load and measured resize before chrome observers settled; its fixture now seeds once and waits two frames, retaining the original geometry/persistence assertions. These diagnostics are not claimed as initial passes.
 
 ### Measured impact
 

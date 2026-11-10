@@ -80,14 +80,18 @@ try {
           const image = document.querySelector(".hero-portrait img");
           const portrait = image.getBoundingClientRect();
           const title = document.querySelector(".hero-heading").getBoundingClientRect();
-          return { width: innerWidth, overflow: document.documentElement.scrollWidth > innerWidth, header: header.toJSON(), controls, portrait: portrait.toJSON(), title: title.toJSON(), imageLoaded: image.complete && image.naturalWidth > 0, source: image.currentSrc };
+          const instruction = document.querySelector(".network-instruction").getBoundingClientRect();
+          return { width: innerWidth, overflow: document.documentElement.scrollWidth > innerWidth, header: header.toJSON(), controls, portrait: portrait.toJSON(), title: title.toJSON(), instruction: instruction.toJSON(), imageLoaded: image.complete && image.naturalWidth > 0, source: image.currentSrc };
         });
         assert.equal(layout.overflow, false, `${locale}/${theme}/${width}`);
         assert.ok(layout.imageLoaded && layout.source.includes(".webp"), "optimized real portrait loaded");
         assert.ok(layout.portrait.width > 180 && layout.portrait.height > 200, `${locale}/${theme}/${width}: ${JSON.stringify(layout.portrait)}`);
         assert.ok(layout.controls.every(rect => rect.left >= 0 && rect.right <= width + 1 && rect.height >= 43.99));
         assert.equal(layout.header.height, 80, "existing header height preserved at base text size");
-        if (width < 900) assert.ok(layout.title.bottom <= layout.portrait.top + 1, "mobile/tablet portrait does not cover slogan");
+        if (width < 900) {
+          assert.ok(layout.title.bottom <= layout.portrait.top + 1, "mobile/tablet portrait does not cover slogan");
+          assert.ok(layout.instruction.top >= layout.portrait.bottom - 1, "mobile/tablet portrait does not cover Sphere caption");
+        }
         layouts.push({ theme, locale, ...layout });
         if ([430, 1440].includes(width)) await page.screenshot({ path: `${output}/${theme}-${locale}-${width}.png` });
       }

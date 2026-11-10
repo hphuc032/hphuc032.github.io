@@ -67,8 +67,8 @@
     .hero-portrait { position: relative; grid-column: 1; width: min(86%, 28rem); height: auto; aspect-ratio: 1121 / 1403; justify-self: center; right: auto; bottom: auto; }
     .hero-composition > .network-object { width: min(100%, 38rem); top: auto; bottom: 0; right: 50%; transform: translateX(50%); }
     .hero-marquee-window { top: 42%; }
-    .network-instruction { bottom: 0; }
-    .hero-bottomline { margin-top: var(--space-8); }
+    .network-instruction { bottom: -2rem; }
+    .hero-bottomline { margin-top: var(--space-12); }
   }
   @media (max-width: 599px) {
     .hero { padding-top: var(--space-6); }
