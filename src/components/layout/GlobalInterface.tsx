@@ -9,6 +9,7 @@ import { useSectionIndex } from "@/hooks/use-section-index";
 import { StatusIndicator } from "@/components/ui/StatusIndicator";
 import { activeNavigationItem, siteNavigationIds, siteNavigationPath } from "@/data/page-publication";
 import { LanguageSelector } from "./LanguageSelector";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function GlobalInterface({ locale }: { locale: Locale }) {
   const copy = globalUI[locale];
@@ -87,12 +88,13 @@ export function GlobalInterface({ locale }: { locale: Locale }) {
         >{copy.navigationLabels[id]}</DeploymentLink>)}
       </nav>
       <div className="header-controls">
+        <ThemeToggle locale={locale} />
         <div className="header-language"><LanguageSelector locale={locale} /></div>
         <button ref={trigger} className="menu-trigger header-menu-trigger" type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls="site-index" data-cursor="open" onClick={() => setOpen(true)}>{copy.menu}<span aria-hidden="true"> +</span></button>
       </div>
     </header>
     <noscript>
-      <style>{`.header-menu-trigger,.desktop-navigation,.header-language{display:none!important}.site-header{position:static}.no-js-navigation{padding-top:var(--space-4)}`}</style>
+      <style>{`.header-menu-trigger,.desktop-navigation,.header-language,.theme-toggle{display:none!important}.site-header{position:static}.no-js-navigation{padding-top:var(--space-4)}`}</style>
       <nav className="no-js-navigation" aria-label={copy.navigation}>
         {siteNavigationIds.map(id => <DeploymentLink key={id} href={siteNavigationPath(id, locale)} aria-current={routeActive === id ? "page" : undefined}>{copy.navigationLabels[id]}</DeploymentLink>)}
         <LanguageSelector locale={locale} />

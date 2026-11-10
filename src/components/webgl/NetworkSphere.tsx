@@ -40,7 +40,7 @@ export function NetworkSphere({ children, locale }: { children: ReactNode; local
   useEffect(() => {
     const media = window.matchMedia("(min-width: 900px)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    const check = () => { setMobile(!media.matches); setEligible(!connection?.saveData); };
+    const check = () => { setMobile(!media.matches); setEligible(media.matches && !connection?.saveData); };
     check(); media.addEventListener("change", check);
     return () => media.removeEventListener("change", check);
   }, []);
@@ -135,7 +135,7 @@ export function NetworkSphere({ children, locale }: { children: ReactNode; local
         </button>;
       })}
     </div>
-    <p className="network-instruction">{homeLabels[locale].drag}</p>
+    <p className="network-instruction">{live ? homeLabels[locale].drag : homeLabels[locale].skills}</p>
     {live && <button className="network-pause" type="button" aria-pressed={paused} onClick={() => setPaused(value => !value)}>
       {locale === "en" ? (paused ? "RESUME MOTION" : "PAUSE MOTION") : (paused ? "TIẾP TỤC CHUYỂN ĐỘNG" : "DỪNG CHUYỂN ĐỘNG")}
     </button>}

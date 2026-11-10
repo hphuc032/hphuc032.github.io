@@ -12,6 +12,7 @@ export type SectionId = (typeof sectionIds)[number];
 export const globalUI = {
   en: {
     menu: "Menu", close: "Close", navigation: "Primary navigation", language: "Language",
+    switchToLight: "Switch to Light Mode", switchToDark: "Switch to Dark Mode",
     sectionLabels: homeLabels.en.chapters,
     navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
     translationUnavailable: "Translation not yet published",
@@ -20,13 +21,14 @@ export const globalUI = {
   },
   vi: {
     menu: "Menu", close: "Đóng", navigation: "Điều hướng chính", language: "Ngôn ngữ",
+    switchToLight: "Chuyển sang giao diện sáng", switchToDark: "Chuyển sang giao diện tối",
     sectionLabels: homeLabels.vi.chapters,
     navigationLabels: { home: "Home", projects: "Projects", writeups: "Writeups", about: "About", terminal: "Terminal", contact: "Contact" },
     translationUnavailable: "Bản dịch chưa được công bố",
     online: "HỆ THỐNG TRỰC TUYẾN", compactOnline: "TRỰC TUYẾN", location: "VIỆT NAM / UTC+7", system: "HỆ THỐNG",
     initializing: "KHỞI TẠO CARWYN.SEC", ready: "GIAO DIỆN SẴN SÀNG", home: "carwyn.sec — Trang chủ",
   },
-} satisfies Record<Locale, { menu: string; close: string; navigation: string; language: string; sectionLabels: readonly string[]; navigationLabels: Record<SiteNavigationId, string>; translationUnavailable: string; online: string; compactOnline: string; location: string; system: string; initializing: string; ready: string; home: string }>;
+} satisfies Record<Locale, { menu: string; close: string; navigation: string; language: string; switchToLight: string; switchToDark: string; sectionLabels: readonly string[]; navigationLabels: Record<SiteNavigationId, string>; translationUnavailable: string; online: string; compactOnline: string; location: string; system: string; initializing: string; ready: string; home: string }>;
 
 export const publicPath = canonicalPublicPath;
 

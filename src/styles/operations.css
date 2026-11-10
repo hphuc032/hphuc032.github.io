@@ -17,9 +17,9 @@
 .operation-arrow { font-size: 2rem; justify-self: end; transition: transform var(--duration-medium) var(--ease-editorial); }
 .operation-preview { position: absolute; right: 4rem; top: 50%; width: min(28%, 25rem); transform: translateY(-50%); pointer-events: none; opacity: .22; transition: opacity var(--duration-medium) var(--ease-editorial), clip-path var(--duration-medium) var(--ease-editorial); clip-path: inset(0 0 0 0); }
 .project-visual { margin: 0; color: var(--text-muted); }
-.project-visual svg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; background: #111a1e; }
-.visual-assessment svg { background: #111b17; }
-.visual-protocol svg { background: #131920; }
+.project-visual svg { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; background: var(--visual-access); }
+.visual-assessment svg { background: var(--visual-assessment); }
+.visual-protocol svg { background: var(--visual-protocol); }
 .project-visual figcaption { padding-top: var(--space-3); font: .6875rem/1.65 var(--font-technical), monospace; color: var(--text-subtle); }
 .operation-preview figcaption { text-align: right; }
 .operation-link:focus-visible ~ .operation-preview { opacity: 1; }

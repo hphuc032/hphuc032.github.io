@@ -16,11 +16,12 @@
 @import "./creative-interaction.css";
 @import "./atmosphere.css";
 @import "./motion.css";
+@import "./theme-surfaces.css";
 
 @layer base {
   html {
     scroll-padding-block: calc(var(--header-height) + var(--space-3)) calc(var(--status-height) + var(--space-3));
-    color-scheme: dark;
+    color-scheme: var(--theme-color-scheme);
     background: var(--background);
     color: var(--text-primary);
     font-family: var(--font-editorial), sans-serif;

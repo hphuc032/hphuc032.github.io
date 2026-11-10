@@ -5,13 +5,16 @@ import type { Locale } from "@/i18n/locales";
 import { HeroScrollCue } from "./HeroScrollCue";
 import { LiquidLight } from "@/components/motion/LiquidLight";
 import { profile } from "@/data/profile";
+import { HeroMarquee } from "./HeroMarquee";
+import { HeroPortrait } from "./HeroPortrait";
 
 export function Hero({ locale }: { locale: Locale }) {
   return <section id="hero" className="hero" aria-labelledby="hero-title" data-liquid="1">
     <LiquidLight />
+    <div className="hero-grid-floor" aria-hidden="true" />
+    <HeroMarquee name={profile.name.toUpperCase()} signature={profile.name} locale={locale} />
     <div className="hero-topline" data-hero-detail>
       <SectionLabel number="01">HERO</SectionLabel>
-      <span className="hero-signature" lang="en">{profile.name}</span>
     </div>
     <div className="hero-composition">
     <h1 id="hero-title" className="hero-heading" lang="en" aria-label="UNDERSTAND SYSTEMS. DEFEND THEM.">
@@ -19,6 +22,7 @@ export function Hero({ locale }: { locale: Locale }) {
       <span className="hero-statement hero-defend" aria-hidden="true"><span className="hero-line"><span data-hero-line>DEFEND</span></span><span className="hero-line"><span data-hero-line>THEM.</span></span></span>
     </h1>
     <NetworkSphere locale={locale}><StaticNetwork /></NetworkSphere>
+    <HeroPortrait locale={locale} />
     </div>
     <div className="hero-bottomline" data-hero-detail>
       <p className="hero-field">{locale === "en" ? "INFORMATION SECURITY" : "AN TOÀN THÔNG TIN"}<span>2026</span></p>

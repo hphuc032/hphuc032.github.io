@@ -1,16 +1,16 @@
 /* Reading-oriented paper surface shared by the homepage preview and archive. */
 .security-log, .log-index, .log-article {
-  --log-paper: #e2e5e0;
-  --text-primary: #171c1a;
-  --text-muted: #46514d;
-  --text-subtle: #586660;
-  --border: #a8b1ac;
-  --border-active: #53645d;
-  --focus: #145f66;
+  --log-paper: var(--reading-paper);
+  --text-primary: var(--reading-primary);
+  --text-muted: var(--reading-muted);
+  --text-subtle: var(--reading-subtle);
+  --border: var(--reading-border);
+  --border-active: var(--reading-border-active);
+  --focus: var(--reading-accent);
   background: var(--log-paper);
   color: var(--text-primary);
 }
-.security-log ::selection, .log-index ::selection, .log-article ::selection { background: #193b3e; color: var(--log-paper); }
+.security-log ::selection, .log-index ::selection, .log-article ::selection { background: var(--reading-selection); color: var(--log-paper); }
 .security-log { border-top: 1px solid var(--border); padding-block: var(--transition-space); }
 .security-log-inner, .log-index-inner, .log-article-inner { width: min(calc(100% - 2 * var(--page-gutter)), var(--wide-width)); margin-inline: auto; }
 .security-log-topline { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-6); }
@@ -37,7 +37,7 @@
 .security-log-end { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-6); margin-top: var(--space-12); }
 @media (hover: hover) and (pointer: fine) {
   .log-entry-link:hover .log-entry-action { transform: translateX(var(--space-2)); }
-  .log-entry-link:hover h2, .log-entry-link:hover h3 { color: #145f66; }
+  .log-entry-link:hover h2, .log-entry-link:hover h3 { color: var(--reading-accent); }
 }
 
 .log-index, .log-article { min-height: calc(100svh - var(--header-height) - var(--status-height)); padding-block: var(--space-6) var(--transition-space); }
@@ -61,7 +61,7 @@
 .log-prose h2 { margin: var(--space-16) 0 var(--space-6); font-size: var(--text-heading-2); line-height: 1.3; letter-spacing: -.03em; font-weight: 500; }
 .log-prose p { color: var(--text-muted); }
 .log-prose p + p { margin-top: var(--space-6); }
-.log-prose pre { max-width: 100%; margin-block: var(--space-8); overflow-x: auto; padding: var(--space-6); border: 1px solid #33403c; background: #101715; color: #d9e4df; font: var(--text-metadata)/1.75 var(--font-technical), monospace; tab-size: 2; }
+.log-prose pre { max-width: 100%; margin-block: var(--space-8); overflow-x: auto; padding: var(--space-6); border: 1px solid var(--code-border); background: var(--code-background); color: var(--code-text); font: var(--text-metadata)/1.75 var(--font-technical), monospace; tab-size: 2; }
 .log-prose code { font-family: var(--font-technical), monospace; }
 .log-prose table { display: block; width: 100%; margin-block: var(--space-12); overflow-x: auto; border-collapse: collapse; }
 .log-prose caption { display: block; width: 100%; margin-bottom: var(--space-4); text-align: left; font: var(--text-mono-label)/1.65 var(--font-technical), monospace; text-transform: uppercase; letter-spacing: .055em; color: var(--text-subtle); }
@@ -69,8 +69,8 @@
 .log-prose th, .log-prose td { width: 50%; padding: var(--space-4); border: 1px solid var(--border); text-align: left; vertical-align: top; }
 .log-prose th { font: 500 var(--text-metadata)/1.6 var(--font-technical), monospace; color: var(--text-primary); }
 .log-prose td { color: var(--text-muted); font-size: var(--text-body-sm); line-height: 1.7; }
-.log-callout { margin-block: var(--space-10, 2.5rem); padding: var(--space-6) 0 var(--space-6) var(--space-6); border-left: 2px solid #32777b; }
-.log-callout > strong { display: block; margin-bottom: var(--space-3); font: 500 var(--text-mono-label)/1.65 var(--font-technical), monospace; letter-spacing: .065em; text-transform: uppercase; color: #145f66; }
+.log-callout { margin-block: var(--space-10, 2.5rem); padding: var(--space-6) 0 var(--space-6) var(--space-6); border-left: 2px solid var(--reading-callout); }
+.log-callout > strong { display: block; margin-bottom: var(--space-3); font: 500 var(--text-mono-label)/1.65 var(--font-technical), monospace; letter-spacing: .065em; text-transform: uppercase; color: var(--reading-accent); }
 .log-callout p { color: var(--text-primary); }
 .log-article-footer { width: min(100%, var(--reading-width)); margin: var(--space-24) auto 0; padding-top: var(--space-8); border-top: 1px solid var(--border); }
 @media (max-width: 63.99rem) {

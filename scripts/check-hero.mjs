@@ -114,7 +114,7 @@ try {
   const mobile = await touch.newPage();
   await mobile.goto(base);
   await mobile.waitForTimeout(2400);
-  assert.equal(await mobile.locator(".network-live canvas").count(), 1);
+  assert.equal(await mobile.locator(".network-live canvas").count(), 0, "cinematic mobile composition keeps the complete static fallback");
   assert.equal(await mobile.locator(".network-object").getAttribute("data-network-topology"), "mobile");
   assert.equal(await mobile.locator("[data-sphere-skills] li").count(), 13);
   await mobile.screenshot({ path: "test-results/hero/mobile-430.png" });

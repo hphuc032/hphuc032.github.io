@@ -16,17 +16,17 @@
   font-size: var(--text-body);
 }
 .dedicated-page[data-page="about"] :is(.identity, .experience) {
-  --text-primary: #f5f5f5;
-  --text-muted: #b6bdc3;
-  --text-subtle: #88939b;
-  --border: #30383f;
-  --accent-digital: #00c8ff;
-  --focus: #00ffb2;
+  --text-primary: var(--site-text-primary);
+  --text-muted: var(--site-text-muted);
+  --text-subtle: var(--site-text-subtle);
+  --border: var(--site-border);
+  --accent-digital: var(--site-digital);
+  --focus: var(--site-focus);
   background: var(--surface);
   color: var(--text-primary);
 }
 .dedicated-page[data-page="about"] :is(.identity, .experience) ::selection {
-  color: #050505;
+  color: var(--background);
   background: var(--accent-cyber);
 }
 .dedicated-page[data-page="about"] :is(.identity-inner, .expertise-inner, .experience-inner, .achievements-inner, .about-cv) {
@@ -90,7 +90,7 @@
   max-width: 18ch;
 }
 .dedicated-page[data-page="about"] .experience-description { font-size: var(--text-body); }
-.dedicated-page[data-page="about"] .achievements { background: #0a1012; }
+.dedicated-page[data-page="about"] .achievements { background: var(--achievement-paper); }
 .dedicated-page[data-page="about"] .achievement-group + .achievement-group { margin-top: var(--space-12); }
 .dedicated-page[data-page="about"] .achievement-group-heading h3 { font-size: var(--text-body-sm); letter-spacing: .065em; }
 .dedicated-page[data-page="about"] .achievement-record {

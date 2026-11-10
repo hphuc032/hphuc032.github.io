@@ -16,6 +16,7 @@
     "lint": "eslint . --max-warnings=0",
     "type-check": "next typegen && tsc --noEmit",
     "check:accessibility": "node scripts/check-accessibility.mjs",
+    "check:theme": "node scripts/check-theme.mjs",
     "check:responsive": "node scripts/check-responsive.mjs",
     "check:routes": "node scripts/check-routes.mjs",
     "check:contact": "node scripts/check-contact.mjs",
